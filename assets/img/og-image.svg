@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4A3226" />
+      <stop offset="1" stop-color="#241812" />
+    </linearGradient>
+    <linearGradient id="brass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#E0B973" />
+      <stop offset="1" stop-color="#B8873B" />
+    </linearGradient>
+    <radialGradient id="glow" cx="0.25" cy="0.2" r="0.85">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.22" />
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)" />
+  <circle cx="260" cy="140" r="330" fill="#ffffff" opacity="0.05" />
+  <circle cx="1030" cy="540" r="260" fill="#000000" opacity="0.10" />
+  <rect width="1200" height="630" fill="url(#glow)" />
+
+  <g transform="translate(84,150)">
+    <rect x="0" y="0" width="96" height="96" rx="24" fill="#1A1310" />
+    <rect x="8" y="8" width="80" height="80" rx="19" fill="none" stroke="url(#brass)" stroke-width="2.6" />
+    <path d="M27 34h42" stroke="#E0B973" stroke-width="3.8" stroke-linecap="round" />
+    <path d="M48 34v33" stroke="#E0B973" stroke-width="3.8" stroke-linecap="round" />
+    <path d="M33 67c6-4.5 9-10.5 9-16.5M63 67c-6-4.5-9-10.5-9-16.5" stroke="#C08552" stroke-width="3.6" stroke-linecap="round" fill="none" />
+  </g>
+
+  <text x="84" y="330" font-family="Cormorant Garamond, Georgia, serif" font-size="88" font-weight="600" fill="#FDFBF8">
+    The Leather Store
+  </text>
+  <text x="86" y="382" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="22" font-weight="600" letter-spacing="9" fill="#E0B973">
+    HANDPICKED LEATHER &amp; LIFESTYLE
+  </text>
+  <text x="86" y="452" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="26" font-weight="300" fill="#C9BCAE">
+    Shoes · Sandals · Sneakers · Sun Glasses · Wrist Watches
+  </text>
+  <text x="86" y="492" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="26" font-weight="300" fill="#C9BCAE">
+    Ladies Handbags · Gents Wallets · Travel Bags · Perfumes
+  </text>
+
+  <rect x="86" y="540" width="240" height="2" fill="url(#brass)" />
+</svg>
