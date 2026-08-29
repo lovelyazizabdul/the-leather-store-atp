@@ -1,14 +1,14 @@
 /* ==========================================================================
    The Leather Store — ui.js
-   Shared shell: helpers, header, footer, drawer, scroll behaviours, toasts,
-   and the product-card renderer used by every page.
+   Shared shell: helpers, header, footer, cards, scroll behaviours, toasts.
+   Every string it renders comes from content/site.json.
    ========================================================================== */
 (function (global, doc) {
   "use strict";
 
   var TLS = (global.TLS = global.TLS || {});
-  var S = TLS.SITE;
-  var D = TLS.DATA;
+  var S = TLS.SITE; /* filled in place by content.js */
+  var D = TLS.DATA; /* filled in place by catalog.js */
   var icon = TLS.icon;
 
   /* ====================== 1. Helpers ====================== */
@@ -26,31 +26,40 @@
       .replace(/"/g, "&quot;")
       .replace(/'/g, "&#39;");
   }
-  function attr(str) {
-    return esc(str);
+  var attr = esc;
+
+  /** Escape, then turn {word} into an italic accent. */
+  function rich(text, vars) {
+    return esc(TLS.tpl(text, vars)).replace(/\{([^{}]+)\}/g, '<em class="hl">$1</em>');
   }
 
-  var nf;
-  try {
-    nf = new Intl.NumberFormat(S.locale, {
-      style: "currency",
-      currency: S.currency,
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0
-    });
-  } catch (e) {
-    nf = null;
+  var nf = null;
+  function formatter() {
+    if (nf !== null) return nf;
+    try {
+      nf = new Intl.NumberFormat(S.locale, {
+        style: "currency",
+        currency: S.currency,
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+      });
+    } catch (e) {
+      nf = false;
+    }
+    return nf;
   }
 
   function money(n) {
     if (typeof n !== "number" || !isFinite(n)) return "";
-    if (nf) return nf.format(n);
+    var f = formatter();
+    if (f) return f.format(n);
     return S.currencySymbol + String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 
-  function waLink(message) {
+  function waLink(message, vars) {
     var base = "https://wa.me/" + S.whatsapp;
-    return message ? base + "?text=" + encodeURIComponent(message) : base;
+    if (!message) return base;
+    return base + "?text=" + encodeURIComponent(TLS.tpl(message, vars));
   }
 
   function param(name, search) {
@@ -179,26 +188,40 @@
 
   /* ====================== 5. Opening hours ====================== */
   function hoursStatus(now) {
+    var c = S.common || {};
     var d = now || new Date();
-    var idx = (d.getDay() + 6) % 7; /* config starts on Monday */
-    var today = S.hours[idx];
-    if (!today || !today.open) return { open: false, label: "Closed today", today: today, index: idx };
+    var idx = (d.getDay() + 6) % 7; /* site.json lists Monday first */
+    var today = (S.hours || [])[idx] || { shifts: [] };
+    var shifts = today.shifts || [];
     var mins = d.getHours() * 60 + d.getMinutes();
-    var o = today.open.split(":");
-    var c = today.close.split(":");
-    var openM = +o[0] * 60 + +o[1];
-    var closeM = +c[0] * 60 + +c[1];
-    var isOpen = mins >= openM && mins < closeM;
+    var current = null;
+    var next = null;
+
+    for (var i = 0; i < shifts.length; i++) {
+      if (mins >= shifts[i].openM && mins < shifts[i].closeM) {
+        current = shifts[i];
+        break;
+      }
+      if (!next && mins < shifts[i].openM) next = shifts[i];
+    }
+
+    /* Nothing open now and nothing left to open today. */
+    if (!current && !next) {
+      return { open: false, label: c.closedTodayLabel || "Closed today", today: today, index: idx };
+    }
+
     return {
-      open: isOpen,
-      label: isOpen ? "Open now · until " + fmtTime(today.close) : "Closed · opens " + fmtTime(today.open),
+      open: !!current,
+      label: TLS.tpl(current ? c.openNowTemplate : c.closedTemplate, {
+        TIME: fmtTime(current ? current.close : next.open)
+      }),
       today: today,
       index: idx
     };
   }
 
   function fmtTime(hhmm) {
-    var p = hhmm.split(":");
+    var p = String(hhmm).split(":");
     var h = +p[0];
     var m = p[1];
     var ap = h >= 12 ? "pm" : "am";
@@ -219,26 +242,27 @@
     if (colors.length > shown.length) {
       html += '<span class="swatch--more">+' + (colors.length - shown.length) + "</span>";
     }
-    return '<span class="swatches" aria-label="Available colours: ' + attr(colors.join(", ")) + '">' + html + "</span>";
+    return '<span class="swatches" aria-label="' + attr(colors.join(", ")) + '">' + html + "</span>";
   }
 
   function productCardHTML(p) {
+    var P = S.product || {};
     var img0 = TLS.art.product(p, 0);
     var img1 = TLS.art.product(p, 1);
+    var off = TLS.tpl(P.discountBadgeTemplate, { PERCENT: p.discount });
     var flags = "";
-    if (!p.inStock) flags += '<span class="badge badge--out">Sold out</span>';
-    else if (p.bestseller) flags += '<span class="badge badge--gold">Bestseller</span>';
-    else if (p.isNew) flags += '<span class="badge">New in</span>';
-    if (p.discount >= 20) flags += '<span class="badge badge--sale">' + p.discount + "% off</span>";
+    if (!p.inStock) flags += '<span class="badge badge--out">' + esc(P.soldOutBadge) + "</span>";
+    else if (p.bestseller) flags += '<span class="badge badge--gold">' + esc(P.bestsellerBadge) + "</span>";
+    else if (p.isNew) flags += '<span class="badge">' + esc(P.newBadge) + "</span>";
+    if (p.discount >= 20) flags += '<span class="badge badge--sale">' + esc(off) + "</span>";
 
     return (
-      '<article class="p-card" data-product="' + attr(p.id) + '" tabindex="0" role="button" ' +
-      'aria-label="View details for ' + attr(p.name) + '">' +
+      '<article class="p-card" data-product="' + attr(p.id) + '" tabindex="0" role="button" aria-label="' + attr(p.name) + '">' +
       '<div class="p-card__media">' +
-      '<img class="p-card__img" src="' + img0 + '" alt="' + attr(p.name) + '" width="800" height="1000" loading="lazy" decoding="async">' +
-      '<img class="p-card__img p-card__img--alt" src="' + img1 + '" alt="" aria-hidden="true" width="800" height="1000" loading="lazy" decoding="async">' +
+      '<img class="p-card__img" src="' + attr(img0) + '" alt="' + attr(p.name) + '" width="800" height="1000" loading="lazy" decoding="async">' +
+      '<img class="p-card__img p-card__img--alt" src="' + attr(img1) + '" alt="" aria-hidden="true" width="800" height="1000" loading="lazy" decoding="async">' +
       (flags ? '<div class="p-card__flags">' + flags + "</div>" : "") +
-      '<span class="p-card__quick">' + icon("eye") + "Quick view</span>" +
+      '<span class="p-card__quick">' + icon("eye") + esc(P.quickViewLabel) + "</span>" +
       "</div>" +
       '<div class="p-card__body">' +
       '<span class="p-card__cat">' + esc(p.categoryName) + "</span>" +
@@ -251,14 +275,13 @@
       '<div class="p-card__foot">' +
       '<span class="price">' + money(p.price) + "</span>" +
       (p.mrp ? '<span class="price--old">' + money(p.mrp) + "</span>" : "") +
-      (p.discount ? '<span class="price--off">' + p.discount + "% off</span>" : "") +
+      (p.discount ? '<span class="price--off">' + esc(off) + "</span>" : "") +
       "</div>" +
       "</div>" +
       "</article>"
     );
   }
 
-  /** Delegate card activation (click + keyboard) to the modal. */
   function bindCards(root) {
     var host = root || doc;
     if (host.__tlsCardsBound) return;
@@ -281,45 +304,58 @@
 
   /* ====================== 7. Category tile ====================== */
   function categoryTileHTML(cat) {
+    var c = S.common || {};
+    var img = cat.imageUrl || TLS.art.category(cat, 900, 700);
     return (
-      '<a class="cat-tile" href="category.html?cat=' + attr(cat.id) + '" aria-label="' + attr(cat.name) + ' — ' + cat.count + ' products">' +
-      '<img class="cat-tile__img" src="' + TLS.art.category(cat, 900, 700) + '" alt="" width="900" height="700" loading="lazy" decoding="async">' +
+      '<a class="cat-tile" href="category.html?cat=' + attr(cat.id) + '" aria-label="' + attr(cat.name) + '">' +
+      '<img class="cat-tile__img" src="' + attr(img) + '" alt="" width="900" height="700" loading="lazy" decoding="async">' +
       '<div class="cat-tile__body">' +
-      '<span class="cat-tile__count">' + cat.count + " products</span>" +
+      '<span class="cat-tile__count">' + cat.count + " " + esc(c.productsSuffix) + "</span>" +
       '<h3 class="cat-tile__name">' + esc(cat.name) + "</h3>" +
-      '<span class="cat-tile__cta">Shop now ' + icon("arrowRight") + "</span>" +
-      "</div>" +
-      "</a>"
+      '<span class="cat-tile__cta">' + esc(c.shopNowLabel) + " " + icon("arrowRight") + "</span>" +
+      "</div></a>"
     );
   }
 
   /* ====================== 8. Header ====================== */
   function socialLinksHTML(light) {
     var cls = light ? " social--light" : "";
-    return (
-      '<a class="social social--instagram' + cls + '" href="' + attr(S.social.instagram) + '" target="_blank" rel="noopener noreferrer" aria-label="Instagram">' + icon("instagram") + "</a>" +
-      '<a class="social social--facebook' + cls + '" href="' + attr(S.social.facebook) + '" target="_blank" rel="noopener noreferrer" aria-label="Facebook">' + icon("facebook") + "</a>" +
-      '<a class="social social--telegram' + cls + '" href="' + attr(S.social.telegram) + '" target="_blank" rel="noopener noreferrer" aria-label="Telegram">' + icon("telegram") + "</a>" +
-      '<a class="social social--whatsapp' + cls + '" href="' + attr(S.social.whatsapp) + '" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">' + icon("whatsapp") + "</a>"
-    );
+    return [
+      ["instagram", "Instagram", S.social.instagram],
+      ["facebook", "Facebook", S.social.facebook],
+      ["telegram", "Telegram", S.social.telegram],
+      ["whatsapp", "WhatsApp", S.social.whatsapp]
+    ]
+      .filter(function (i) {
+        return !!i[2];
+      })
+      .map(function (i) {
+        return (
+          '<a class="social social--' + i[0] + cls + '" href="' + attr(i[2]) +
+          '" target="_blank" rel="noopener noreferrer" aria-label="' + i[1] + '">' + icon(i[0]) + "</a>"
+        );
+      })
+      .join("");
   }
 
   function renderHeader() {
     var host = $("#site-header");
     if (!host) return;
+    var H = S.header || {};
     var page = doc.body.getAttribute("data-page") || "";
     var activeCat = doc.body.getAttribute("data-cat") || "";
 
-    var annItems = S.announcements
+    var annItems = (S.announcements || [])
       .map(function (a) {
-        return '<span class="announce__item">' + icon("sparkle") + esc(a) + "</span>";
+        return '<span class="announce__item">' + icon(a.icon || "sparkle") + esc(TLS.tpl(a.text)) + "</span>";
       })
       .join("");
 
     var megaLinks = D.CATEGORIES.map(function (c) {
+      var thumb = c.imageUrl || TLS.art.category(c, 160, 160);
       return (
         '<a class="mega__link" href="category.html?cat=' + attr(c.id) + '">' +
-        '<img class="mega__thumb" src="' + TLS.art.category(c, 160, 160) + '" alt="" width="160" height="160" loading="lazy" decoding="async">' +
+        '<img class="mega__thumb" src="' + attr(thumb) + '" alt="" width="160" height="160" loading="lazy" decoding="async">' +
         "<span>" +
         '<span class="mega__name">' + esc(c.name) + "</span>" +
         '<span class="mega__count">' + esc(c.tagline) + "</span>" +
@@ -329,42 +365,35 @@
 
     host.className = "site-header";
     host.innerHTML =
-      '<div class="announce" aria-hidden="true"><div class="announce__track">' + annItems + "</div></div>" +
+      (annItems ? '<div class="announce" aria-hidden="true"><div class="announce__track">' + annItems + annItems + "</div></div>" : "") +
       '<div class="container">' +
       '<nav class="navbar" aria-label="Primary">' +
-      '<a class="brand" href="index.html" aria-label="' + attr(S.name) + ' — home">' +
-      TLS.art.logoSvg(42) +
-      '<span class="brand__text">' +
-      '<span class="brand__name">' + esc(S.name) + "</span>" +
-      '<span class="brand__tag">' + esc(S.tagline) + "</span>" +
-      "</span></a>" +
+      '<a class="brand" href="index.html" aria-label="' + attr(S.name) + '">' +
+      TLS.art.logoSvg(140) +
+      '<span class="sr-only">' + esc(S.name) + "</span></a>" +
 
       '<ul class="nav">' +
-      '<li class="nav__item"><a class="nav__link" href="index.html"' + (page === "home" ? ' aria-current="page"' : "") + ">Home</a></li>" +
+      '<li class="nav__item"><a class="nav__link" href="index.html"' + (page === "home" ? ' aria-current="page"' : "") + ">" + esc(H.homeLabel) + "</a></li>" +
       '<li class="nav__item">' +
       '<button class="nav__link" type="button" id="megaBtn" aria-expanded="false" aria-controls="megaMenu"' +
-      (page === "categories" || page === "category" ? ' aria-current="page"' : "") +
-      ">Categories" + icon("chevronDown", "nav__caret") + "</button>" +
+      (page === "categories" || page === "category" ? ' aria-current="page"' : "") + ">" +
+      esc(H.categoriesLabel) + icon("chevronDown", "nav__caret") + "</button>" +
       '<div class="mega" id="megaMenu" role="menu" aria-labelledby="megaBtn">' +
       '<div class="mega__grid">' + megaLinks + "</div>" +
       '<div class="mega__foot">' +
-      '<p class="muted" style="font-size:var(--fs-sm);margin:0">' + D.PRODUCTS.length + " products across " + D.CATEGORIES.length + " categories, all in stock at the shop.</p>" +
-      '<a class="link-arrow" href="categories.html">Browse all categories ' + icon("arrowRight") + "</a>" +
+      '<p class="muted" style="font-size:var(--fs-sm);margin:0">' + esc(TLS.tpl(H.megaNoteTemplate)) + "</p>" +
+      '<a class="link-arrow" href="categories.html">' + esc(H.megaLinkLabel) + " " + icon("arrowRight") + "</a>" +
       "</div></div></li>" +
-      '<li class="nav__item"><a class="nav__link" href="contact.html"' + (page === "contact" ? ' aria-current="page"' : "") + ">Contact Us</a></li>" +
+      '<li class="nav__item"><a class="nav__link" href="contact.html"' + (page === "contact" ? ' aria-current="page"' : "") + ">" + esc(H.contactLabel) + "</a></li>" +
       "</ul>" +
 
       '<div class="nav-actions">' +
-      '<a class="btn btn--outline btn--sm" href="' + attr(waLink("Hello " + S.name + ", I would like to know more about your collection.")) + '" target="_blank" rel="noopener noreferrer">' +
-      icon("whatsapp", "btn__icon") + "Enquire</a>" +
+      '<a class="btn btn--outline btn--sm" href="' + attr(waLink(H.ctaMessage)) + '" target="_blank" rel="noopener noreferrer">' +
+      icon("whatsapp", "btn__icon") + esc(H.ctaLabel) + "</a>" +
       '<button class="burger" type="button" id="burger" aria-expanded="false" aria-controls="mobileDrawer" aria-label="Open menu">' +
       "<span></span><span></span><span></span></button>" +
       "</div>" +
       "</nav></div>";
-
-    /* Duplicate the announcement items so the marquee can loop seamlessly */
-    var track = $(".announce__track", host);
-    if (track) track.innerHTML += annItems;
 
     buildDrawer(page, activeCat);
     wireMega();
@@ -424,6 +453,8 @@
   /* ====================== 9. Mobile drawer ====================== */
   function buildDrawer(page, activeCat) {
     if ($("#mobileDrawer")) return;
+    var H = S.header || {};
+    var F = S.floating || {};
 
     var overlay = doc.createElement("div");
     overlay.className = "overlay";
@@ -435,35 +466,39 @@
     drawer.id = "mobileDrawer";
     drawer.setAttribute("role", "dialog");
     drawer.setAttribute("aria-modal", "true");
-    drawer.setAttribute("aria-label", "Site menu");
+    drawer.setAttribute("aria-label", H.menuLabel || "Menu");
     drawer.setAttribute("tabindex", "-1");
 
     var catLinks = D.CATEGORIES.map(function (c) {
       return (
         '<a class="m-acc__link" href="category.html?cat=' + attr(c.id) + '"' +
-        (activeCat === c.id ? ' aria-current="page"' : "") +
-        ">" + esc(c.name) + '<span class="opt__n" style="margin-left:auto">' + c.count + "</span></a>"
+        (activeCat === c.id ? ' aria-current="page"' : "") + ">" +
+        esc(c.name) + '<span class="opt__n" style="margin-left:auto">' + c.count + "</span></a>"
       );
     }).join("");
 
+    var catsOpen = page === "category" || page === "categories";
+
     drawer.innerHTML =
       '<div class="drawer__head">' +
-      '<span class="drawer__title">Menu</span>' +
+      '<span class="drawer__title">' + esc(H.menuLabel) + "</span>" +
       '<button class="icon-btn" type="button" id="drawerClose" aria-label="Close menu">' + icon("close") + "</button>" +
       "</div>" +
       '<div class="drawer__body">' +
       '<nav class="m-nav" aria-label="Mobile">' +
-      '<a class="m-nav__link" href="index.html"' + (page === "home" ? ' aria-current="page"' : "") + ">Home" + icon("arrowRight") + "</a>" +
-      '<button class="m-acc__btn" type="button" aria-expanded="' + (page === "category" || page === "categories" ? "true" : "false") + '" aria-controls="mAccPanel">Categories' + icon("chevronDown") + "</button>" +
-      '<div class="m-acc__panel' + (page === "category" || page === "categories" ? " is-open" : "") + '" id="mAccPanel">' + catLinks +
-      '<a class="m-acc__link" href="categories.html"><strong>View all categories</strong></a>' +
+      '<a class="m-nav__link" href="index.html"' + (page === "home" ? ' aria-current="page"' : "") + ">" + esc(H.homeLabel) + icon("arrowRight") + "</a>" +
+      '<button class="m-acc__btn" type="button" aria-expanded="' + (catsOpen ? "true" : "false") + '" aria-controls="mAccPanel">' +
+      esc(H.categoriesLabel) + icon("chevronDown") + "</button>" +
+      '<div class="m-acc__panel' + (catsOpen ? " is-open" : "") + '" id="mAccPanel">' + catLinks +
+      '<a class="m-acc__link" href="categories.html"><strong>' + esc(H.viewAllLabel) + "</strong></a>" +
       "</div>" +
-      '<a class="m-nav__link" href="contact.html"' + (page === "contact" ? ' aria-current="page"' : "") + ">Contact Us" + icon("arrowRight") + "</a>" +
+      '<a class="m-nav__link" href="contact.html"' + (page === "contact" ? ' aria-current="page"' : "") + ">" + esc(H.contactLabel) + icon("arrowRight") + "</a>" +
       "</nav>" +
       '<div class="drawer__socials">' + socialLinksHTML(false) + "</div>" +
       "</div>" +
       '<div class="drawer__foot">' +
-      '<a class="btn btn--wa btn--block" href="' + attr(S.social.whatsapp) + '" target="_blank" rel="noopener noreferrer">' + icon("whatsapp", "btn__icon") + "Chat on WhatsApp</a>" +
+      '<a class="btn btn--wa btn--block" href="' + attr(S.social.whatsapp) + '" target="_blank" rel="noopener noreferrer">' +
+      icon("whatsapp", "btn__icon") + esc(F.chatLabel) + "</a>" +
       '<a class="btn btn--outline btn--block" href="tel:' + attr(S.phone) + '">' + icon("phone", "btn__icon") + esc(S.phoneDisplay) + "</a>" +
       "</div>";
 
@@ -516,7 +551,6 @@
       acc.setAttribute("aria-expanded", open ? "true" : "false");
     });
 
-    /* Close automatically when resizing up to desktop */
     global.addEventListener(
       "resize",
       debounce(function () {
@@ -531,10 +565,8 @@
   function renderFooter() {
     var host = $("#site-footer");
     if (!host) return;
-
+    var F = S.footer || {};
     var half = Math.ceil(D.CATEGORIES.length / 2);
-    var colA = D.CATEGORIES.slice(0, half);
-    var colB = D.CATEGORIES.slice(half);
 
     function catList(list) {
       return list
@@ -552,19 +584,21 @@
       '<div class="footer__grid">' +
 
       '<div class="footer__about">' +
-      '<a class="brand" href="index.html" aria-label="' + attr(S.name) + ' — home">' +
-      TLS.art.logoSvg(44) +
-      '<span class="brand__text"><span class="brand__name" style="color:#FDFBF8">' + esc(S.name) + "</span>" +
-      '<span class="brand__tag">' + esc(S.tagline) + "</span></span></a>" +
+      '<a class="brand" href="index.html" aria-label="' + attr(S.name) + '">' +
+      TLS.art.logoSvg(150) +
+      '<span class="sr-only">' + esc(S.name) + "</span></a>" +
       "<p>" + esc(S.description) + "</p>" +
       '<div class="footer__socials">' + socialLinksHTML(true) + "</div>" +
       "</div>" +
 
-      '<div><h2 class="footer__title">Shop</h2><ul class="footer__list">' + catList(colA) + "</ul></div>" +
-      '<div><h2 class="footer__title">More</h2><ul class="footer__list">' + catList(colB) +
-      '<li><a href="categories.html">All categories</a></li></ul></div>' +
+      '<div><h2 class="footer__title">' + esc(F.shopHeading) + '</h2><ul class="footer__list">' +
+      catList(D.CATEGORIES.slice(0, half)) + "</ul></div>" +
 
-      '<div><h2 class="footer__title">Visit &amp; contact</h2>' +
+      '<div><h2 class="footer__title">' + esc(F.moreHeading) + '</h2><ul class="footer__list">' +
+      catList(D.CATEGORIES.slice(half)) +
+      '<li><a href="categories.html">' + esc(F.allCategoriesLabel) + "</a></li></ul></div>" +
+
+      '<div><h2 class="footer__title">' + esc(F.contactHeading) + "</h2>" +
       '<div class="footer__contact">' +
       '<p class="footer__contact-item">' + icon("pin") + "<span>" + esc(S.address.full) + "</span></p>" +
       '<a class="footer__contact-item" href="tel:' + attr(S.phone) + '">' + icon("phone") + "<span>" + esc(S.phoneDisplay) + "</span></a>" +
@@ -573,32 +607,30 @@
       '<span><span class="status-dot ' + (st.open ? "status-dot--open" : "status-dot--closed") + '">' + esc(st.label) + "</span></span></p>" +
       "</div>" +
       '<a class="btn btn--gold btn--sm" style="margin-top:1.25rem" href="' + attr(S.mapsDirections) + '" target="_blank" rel="noopener noreferrer">' +
-      icon("navigation", "btn__icon") + "Get directions</a>" +
+      icon("navigation", "btn__icon") + esc(F.directionsLabel) + "</a>" +
       "</div>" +
 
       "</div>" +
       '<div class="footer__bottom">' +
-      "<p>&copy; <span id=\"tlsYear\"></span> " + esc(S.name) + ". All rights reserved.</p>" +
+      "<p>" + esc(TLS.tpl(F.copyrightTemplate)) + "</p>" +
       '<nav class="footer__legal" aria-label="Legal">' +
-      '<a href="index.html">Home</a>' +
-      '<a href="categories.html">Categories</a>' +
-      '<a href="contact.html">Contact Us</a>' +
-      '<a href="contact.html#store-policies">Store policies</a>' +
-      "</nav>" +
-      "</div></div>";
-
-    var y = $("#tlsYear", host);
-    if (y) y.textContent = new Date().getFullYear();
+      (F.legalLinks || [])
+        .map(function (l) {
+          return '<a href="' + attr(l.href) + '">' + esc(l.label) + "</a>";
+        })
+        .join("") +
+      "</nav></div></div>";
   }
 
   /* ====================== 11. Floating actions ====================== */
   function mountFloatingActions() {
     if ($(".to-top")) return;
+    var F = S.floating || {};
 
     var top = doc.createElement("button");
     top.type = "button";
     top.className = "to-top";
-    top.setAttribute("aria-label", "Back to top");
+    top.setAttribute("aria-label", F.backToTopLabel || "Back to top");
     top.innerHTML = icon("arrowUp");
     top.addEventListener("click", function () {
       global.scrollTo({ top: 0, behavior: prefersReducedMotion() ? "auto" : "smooth" });
@@ -607,11 +639,11 @@
 
     var wa = doc.createElement("a");
     wa.className = "wa-fab";
-    wa.href = waLink("Hello " + S.name + "! I have a question about a product.");
+    wa.href = waLink(F.whatsappMessage);
     wa.target = "_blank";
     wa.rel = "noopener noreferrer";
-    wa.setAttribute("aria-label", "Chat with us on WhatsApp");
-    wa.innerHTML = icon("whatsapp") + '<span class="wa-fab__label">WhatsApp us</span>';
+    wa.setAttribute("aria-label", F.whatsappLabel || "WhatsApp");
+    wa.innerHTML = icon("whatsapp") + '<span class="wa-fab__label">' + esc(F.whatsappLabel) + "</span>";
     doc.body.appendChild(wa);
 
     var onScroll = function () {
@@ -698,18 +730,17 @@
         addressCountry: S.address.countryCode
       },
       geo: { "@type": "GeoCoordinates", latitude: S.geo.lat, longitude: S.geo.lng },
-      openingHoursSpecification: S.hours
-        .filter(function (h) {
-          return h.open;
-        })
-        .map(function (h) {
-          return {
+      openingHoursSpecification: (S.hours || []).reduce(function (acc, h) {
+        (h.shifts || []).forEach(function (s) {
+          acc.push({
             "@type": "OpeningHoursSpecification",
             dayOfWeek: DAY_URI[h.day] || h.day,
-            opens: h.open,
-            closes: h.close
-          };
-        }),
+            opens: s.open,
+            closes: s.close
+          });
+        });
+        return acc;
+      }, []),
       sameAs: [S.social.instagram, S.social.facebook, S.social.telegram, S.social.whatsapp].filter(Boolean),
       department: D.CATEGORIES.map(function (c) {
         return { "@type": "ClothingStore", name: c.name, url: S.url + "/category.html?cat=" + c.id };
@@ -723,15 +754,16 @@
     doc.head.appendChild(s);
   }
 
-  /* ====================== 15. Boot ====================== */
-  function boot() {
+  /* ====================== 15. Shell boot ====================== */
+  function bootShell() {
     doc.documentElement.classList.remove("no-js");
+    var skip = $(".skip-link");
+    if (skip && S.common && S.common.skipLink) skip.textContent = S.common.skipLink;
     renderHeader();
     renderFooter();
     mountFloatingActions();
     bindCards(doc);
     injectSchema();
-    initReveal();
   }
 
   /* ====================== Exports ====================== */
@@ -739,6 +771,7 @@
   TLS.$$ = $$;
   TLS.esc = esc;
   TLS.attr = attr;
+  TLS.rich = rich;
   TLS.money = money;
   TLS.waLink = waLink;
   TLS.param = param;
@@ -757,11 +790,5 @@
   TLS.initReveal = initReveal;
   TLS.breadcrumbHTML = breadcrumbHTML;
   TLS.socialLinksHTML = socialLinksHTML;
-  TLS.boot = boot;
-
-  if (doc.readyState === "loading") {
-    doc.addEventListener("DOMContentLoaded", boot);
-  } else {
-    boot();
-  }
+  TLS.bootShell = bootShell;
 })(window, document);

@@ -1,0 +1,191 @@
+{
+  "_help": "LANDING PAGE (index.html). Put a word in {curly braces} inside a title to make it italic gold, e.g. \"Leather that {remembers} you\". Slide images resolve through content/site.json → media.heroImages — leave \"image\" empty to use generated artwork.",
+  "meta": {
+    "title": "The Leather Store — Handpicked Leather Shoes, Bags, Watches & More",
+    "description": "The Leather Store is a family-run boutique for handpicked leather shoes, sandals, sneakers, sunglasses, wrist watches, ladies handbags, gents wallets, travel bags and perfumes. Visit us in store."
+  },
+  "hero": {
+    "intervalMs": 6000,
+    "ariaLabel": "Featured collections",
+    "slides": [
+      {
+        "category": "shoes",
+        "image": "Shoes.jpg",
+        "eyebrow": "Since 2017",
+        "title": "Leather that {remembers} you",
+        "text": "Hand-selected hides, hand-finished edges, and a fit our team checks in person. Rare, handpicked pieces you will not find down the street.",
+        "primaryCta": {
+          "label": "Explore the collection",
+          "href": "categories.html"
+        },
+        "secondaryCta": {
+          "label": "Visit the store",
+          "href": "contact.html"
+        }
+      },
+      {
+        "category": "watches",
+        "image": "Watch.jpg",
+        "eyebrow": "Wrist Watches",
+        "title": "Time, {properly} kept",
+        "text": "Swiss-grade automatics and slim quartz dress watches — each one regulated and strap-sized before you walk out.",
+        "primaryCta": {
+          "label": "Shop watches",
+          "href": "category.html?cat=watches"
+        },
+        "secondaryCta": null
+      },
+      {
+        "category": "handbags",
+        "image": "Handbag.jpg",
+        "eyebrow": "Ladies Handbags",
+        "title": "Carry it with {intent}",
+        "text": "Saffiano totes, quilted lambskin crossbodies and suede buckets — structured to hold their shape for years.",
+        "primaryCta": {
+          "label": "Shop handbags",
+          "href": "category.html?cat=handbags"
+        },
+        "secondaryCta": null
+      },
+      {
+        "category": "sunglasses",
+        "image": "SunGlasses.jpg",
+        "eyebrow": "New Season",
+        "title": "Streets, {softened}",
+        "text": "Polarised and gradient frames with the right amount of edge — made to wear from first light to late afternoon.",
+        "primaryCta": {
+          "label": "Shop sunglasses",
+          "href": "category.html?cat=sunglasses"
+        },
+        "secondaryCta": null
+      },
+      {
+        "category": "perfumes",
+        "image": "Perfume.JPG",
+        "eyebrow": "Fragrance Bar",
+        "title": "A scent worth {remembering}",
+        "text": "Oud, amber and citrus compositions at 18–24% concentration. Sample every bottle on skin, in store.",
+        "primaryCta": {
+          "label": "Shop perfumes",
+          "href": "category.html?cat=perfumes"
+        },
+        "secondaryCta": null
+      }
+    ]
+  },
+  "marquee": [
+    "Full-grain leather",
+    "Hand-finished",
+    "Fitted in store",
+    "Handpicked & rare",
+    "Trend-led picks",
+    "Since 2017"
+  ],
+  "values": [
+    {
+      "icon": "award",
+      "title": "Genuine leather, always",
+      "text": "Every hide is sourced from certified tanneries and checked by hand before it enters the shop."
+    },
+    {
+      "icon": "ruler",
+      "title": "Fitted in person",
+      "text": "Shoes sized on both feet, watch straps adjusted, frames bent to your face — free, for life."
+    }
+  ],
+  "categoriesSection": {
+    "eyebrow": "Nine collections",
+    "title": "Everything under one roof",
+    "text": "Footwear, eyewear, timepieces, bags and fragrance — curated by hand, stocked on the shelf, and ready to try on today.",
+    "linkLabel": "View all categories",
+    "linkHref": "categories.html"
+  },
+  "catalog": {
+    "eyebrow": "The complete catalog",
+    "title": "Every item in the store",
+    "text": "Browse the whole shop below, or jump to a collection. Tap any product for photos, a video and full specifications.",
+    "allTabLabel": "All products",
+    "itemsSuffix": "items",
+    "blockLinkLabel": "Show More"
+  },
+  "story": {
+    "eyebrow": "Our story",
+    "title": "A shop built on {touch}, not on trends",
+    "image": "",
+    "imageAlt": "Hand-finished leather goods on the workbench",
+    "imageArtwork": "wallets",
+    "badgeLabel": "Years",
+    "paragraphs": [
+      "We started in {ESTABLISHED} with one counter and one rule: nothing leaves the shop that we would not carry ourselves.",
+      "Today {STORE} spans nine categories — footwear, eyewear, timepieces, bags, wallets and fragrance — but the rule has not changed. Every article is picked by hand, checked before it reaches the shelf, and sold to you by the same person who chose it."
+    ],
+    "stats": [
+      {
+        "value": "{PRODUCTS}+",
+        "label": "Products in store"
+      },
+      {
+        "value": "{CATEGORIES}",
+        "label": "Categories"
+      },
+      {
+        "value": "12k+",
+        "label": "Happy customers"
+      }
+    ],
+    "cta": {
+      "label": "Visit the store",
+      "href": "contact.html"
+    }
+  },
+  "reviews": {
+    "eyebrow": "In their words",
+    "title": "Customers who keep coming back",
+    "items": [
+      {
+        "stars": 5,
+        "text": "I have bought three pairs of shoes here over six years. The first pair has been resoled twice and still looks better than anything new I own.",
+        "name": "Anand Krishnan",
+        "note": "Customer since 2018"
+      },
+      {
+        "stars": 5,
+        "text": "They spent forty minutes helping me choose a handbag and did not once try to upsell me. That is why I keep coming back with my friends.",
+        "name": "Priya Menon",
+        "note": "Customer since 2021"
+      },
+      {
+        "stars": 5,
+        "text": "Bought a watch as a gift. They sized the bracelet, set the time, boxed it and refused to charge for any of it. Rare service.",
+        "name": "Vikram Shetty",
+        "note": "Customer since 2020"
+      }
+    ]
+  },
+  "visitCta": {
+    "eyebrow": "Come and see for yourself",
+    "title": "Everything on this page is on the shelf, today",
+    "showAddressAndHours": true,
+    "buttons": [
+      {
+        "label": "Get directions",
+        "icon": "navigation",
+        "action": "directions",
+        "style": "gold"
+      },
+      {
+        "label": "",
+        "icon": "phone",
+        "action": "phone",
+        "style": "light"
+      },
+      {
+        "label": "Contact us",
+        "icon": "",
+        "action": "link",
+        "href": "contact.html",
+        "style": "light"
+      }
+    ]
+  }
+}

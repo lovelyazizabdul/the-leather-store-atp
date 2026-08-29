@@ -1,6 +1,7 @@
 /* ==========================================================================
    The Leather Store — modal.js
    Product detail modal: image gallery, product video, specs, enquiry CTA.
+   All wording comes from content/site.json → "product".
    Deep-linkable via #p=<product-id>.
    ========================================================================== */
 (function (global, doc) {
@@ -9,10 +10,6 @@
   var TLS = (global.TLS = global.TLS || {});
   var S = TLS.SITE;
   var D = TLS.DATA;
-  var icon = TLS.icon;
-  var esc = TLS.esc;
-  var attr = TLS.attr;
-  var money = TLS.money;
 
   var root = null;
   var trap = null;
@@ -22,9 +19,14 @@
   var didPush = false;
   var isOpen = false;
 
+  function P() {
+    return S.product || {};
+  }
+
   /* ---------------- Markup shell ---------------- */
   function build() {
     if (root) return root;
+    var icon = TLS.icon;
 
     root = doc.createElement("div");
     root.className = "modal";
@@ -35,7 +37,8 @@
     root.innerHTML =
       '<div class="modal__backdrop" data-close></div>' +
       '<div class="modal__dialog" role="document">' +
-      '<button class="modal__close" type="button" data-close aria-label="Close product details">' + icon("close") + "</button>" +
+      '<button class="modal__close" type="button" data-close aria-label="' + TLS.attr(P().closeLabel || "Close") + '">' +
+      icon("close") + "</button>" +
       '<div class="modal__body">' +
       '<div class="pv">' +
       '<div class="pv__stage" id="pmStage" aria-live="polite"></div>' +
@@ -80,6 +83,8 @@
   }
 
   function renderGallery(p) {
+    var icon = TLS.icon;
+    var attr = TLS.attr;
     var stage = TLS.$("#pmStage", root);
     var thumbs = TLS.$("#pmThumbs", root);
     slides = buildSlides(p);
@@ -91,14 +96,13 @@
           if (s.type === "video") {
             return (
               '<video class="pv__media" data-i="' + i + '" playsinline webkit-playsinline preload="none" controls ' +
-              'poster="' + s.poster + '" aria-label="Product video for ' + attr(p.name) + '">' +
+              'poster="' + attr(s.poster) + '" aria-label="' + attr(p.name) + '">' +
               '<source src="' + attr(s.src) + '" type="video/mp4">' +
-              "Your browser does not support embedded video." +
-              "</video>"
+              "Your browser does not support embedded video.</video>"
             );
           }
           return (
-            '<img class="pv__media" data-i="' + i + '" src="' + s.src + '" ' +
+            '<img class="pv__media" data-i="' + i + '" src="' + attr(s.src) + '" ' +
             'alt="' + attr(p.name + " — view " + (i + 1)) + '" width="800" height="1000" decoding="async">'
           );
         })
@@ -109,11 +113,11 @@
     thumbs.innerHTML = slides
       .map(function (s, i) {
         var img = s.type === "video" ? s.poster : s.src;
+        var label = s.type === "video" ? P().videoTabLabel || "Play video" : "View image " + (i + 1);
         return (
           '<button class="pv__thumb' + (s.type === "video" ? " pv__thumb--video" : "") + '" type="button" role="tab" ' +
-          'data-i="' + i + '" aria-selected="' + (i === 0 ? "true" : "false") + '" ' +
-          'aria-label="' + (s.type === "video" ? "Play product video" : "View image " + (i + 1)) + '">' +
-          '<img src="' + img + '" alt="" width="128" height="128" loading="lazy" decoding="async"></button>'
+          'data-i="' + i + '" aria-selected="' + (i === 0 ? "true" : "false") + '" aria-label="' + attr(label) + '">' +
+          '<img src="' + attr(img) + '" alt="" width="128" height="128" loading="lazy" decoding="async"></button>'
         );
       })
       .join("");
@@ -179,79 +183,94 @@
 
   /* ---------------- Info panel ---------------- */
   function specRow(label, value) {
-    if (!value) return "";
-    return '<div class="pi__spec"><dt>' + esc(label) + "</dt><dd>" + esc(value) + "</dd></div>";
+    if (!value || !label) return "";
+    return '<div class="pi__spec"><dt>' + TLS.esc(label) + "</dt><dd>" + TLS.esc(value) + "</dd></div>";
   }
 
   function renderInfo(p) {
-    var info = TLS.$("#pmInfo", root);
+    var icon = TLS.icon;
+    var esc = TLS.esc;
+    var attr = TLS.attr;
+    var money = TLS.money;
+    var c = P();
+    var L = c.specLabels || {};
 
+    var off = TLS.tpl(c.discountBadgeTemplate, { PERCENT: p.discount });
     var flags = "";
-    if (!p.inStock) flags += '<span class="badge badge--out">Sold out</span>';
-    else flags += '<span class="badge badge--soft">In stock at the store</span>';
-    if (p.bestseller) flags += '<span class="badge badge--gold">Bestseller</span>';
-    if (p.isNew) flags += '<span class="badge">New in</span>';
-    if (p.discount) flags += '<span class="badge badge--sale">' + p.discount + "% off</span>";
+    flags += p.inStock
+      ? '<span class="badge badge--soft">' + esc(c.inStockBadge) + "</span>"
+      : '<span class="badge badge--out">' + esc(c.soldOutBadge) + "</span>";
+    if (p.bestseller) flags += '<span class="badge badge--gold">' + esc(c.bestsellerBadge) + "</span>";
+    if (p.isNew) flags += '<span class="badge">' + esc(c.newBadge) + "</span>";
+    if (p.discount) flags += '<span class="badge badge--sale">' + esc(off) + "</span>";
 
-    var sizes = p.sizes && p.sizes.length
-      ? '<div class="pi__group"><span class="pi__label">' + (p.category === "perfumes" ? "Bottle size" : "Available sizes") + '</span>' +
-        '<div class="pi__pills">' +
-        p.sizes.map(function (s) { return '<span class="pi__pill">' + esc(s) + "</span>"; }).join("") +
-        "</div></div>"
-      : "";
+    var sizes =
+      p.sizes && p.sizes.length
+        ? '<div class="pi__group"><span class="pi__label">' +
+          esc(p.category === "perfumes" ? c.bottleSizeLabel : c.sizesLabel) +
+          '</span><div class="pi__pills">' +
+          p.sizes
+            .map(function (s) {
+              return '<span class="pi__pill">' + esc(s) + "</span>";
+            })
+            .join("") +
+          "</div></div>"
+        : "";
 
-    var colors = p.colors && p.colors.length
-      ? '<div class="pi__group"><span class="pi__label">Colours</span><div class="pi__pills">' +
-        p.colors
-          .map(function (c) {
-            var hex = D.COLOR_HEX[c] || "#b9a894";
-            return '<span class="pi__pill"><span class="swatch" style="background:' + hex + '"></span>' + esc(c) + "</span>";
-          })
-          .join("") +
-        "</div></div>"
-      : "";
+    var colors =
+      p.colors && p.colors.length
+        ? '<div class="pi__group"><span class="pi__label">' + esc(c.coloursLabel) + '</span><div class="pi__pills">' +
+          p.colors
+            .map(function (col) {
+              var hex = D.COLOR_HEX[col] || "#b9a894";
+              return '<span class="pi__pill"><span class="swatch" style="background:' + hex + '"></span>' + esc(col) + "</span>";
+            })
+            .join("") +
+          "</div></div>"
+        : "";
 
     var specs =
       '<dl class="pi__specs">' +
-      specRow("SKU", p.sku) +
-      specRow("Category", p.categoryName) +
-      specRow("Material", p.material) +
-      specRow("Style", p.style) +
-      specRow("Frame shape", p.shape) +
-      specRow("Lens", p.lens) +
-      specRow("Movement", p.movement) +
-      specRow("Strap", p.strap) +
-      specRow("Fragrance family", p.family) +
-      specRow("Concentration", p.concentration) +
-      specRow("Suited to", p.gender) +
-      specRow("Availability", p.inStock ? "In store" : "Ask us to reserve") +
+      specRow(L.sku, p.sku) +
+      specRow(L.category, p.categoryName) +
+      specRow(L.material, p.material) +
+      specRow(L.style, p.style) +
+      specRow(L.shape, p.shape) +
+      specRow(L.lens, p.lens) +
+      specRow(L.movement, p.movement) +
+      specRow(L.strap, p.strap) +
+      specRow(L.family, p.family) +
+      specRow(L.concentration, p.concentration) +
+      specRow(L.gender, p.gender) +
+      specRow(L.availability, p.inStock ? c.availabilityInStore : c.availabilityReserve) +
       "</dl>";
 
     var features =
       '<div class="pi__features">' +
-      p.features
+      (p.features || [])
         .map(function (f) {
           return '<p class="pi__feature">' + icon("check") + "<span>" + esc(f) + "</span></p>";
         })
         .join("") +
       "</div>";
 
-    var msg =
-      "Hello " + S.name + "!\n\nI am interested in this product:\n" +
-      "• " + p.name + " (" + p.sku + ")\n" +
-      "• Category: " + p.categoryName + "\n" +
-      "• Price: " + money(p.price) + "\n\n" +
-      "Is it available? Could you share more details?";
+    var enquiry = TLS.waLink(c.enquiryMessage, {
+      NAME: p.name,
+      SKU: p.sku,
+      CATEGORY: p.categoryName,
+      PRICE: money(p.price)
+    });
 
-    info.innerHTML =
+    TLS.$("#pmInfo", root).innerHTML =
       (flags ? '<div class="pi__flags">' + flags + "</div>" : "") +
       '<span class="pi__cat">' + esc(p.categoryName) + "</span>" +
       '<h2 class="pi__name" id="pmTitle">' + esc(p.name) + "</h2>" +
       '<div class="pi__pricing">' +
       '<span class="price">' + money(p.price) + "</span>" +
       (p.mrp ? '<span class="price--old">' + money(p.mrp) + "</span>" : "") +
-      (p.discount ? '<span class="price--off">Save ' + money(p.mrp - p.price) + "</span>" : "") +
-      '<span class="rating" style="margin-left:auto">' + icon("star") + p.rating.toFixed(1) + " · " + p.reviews + " in-store reviews</span>" +
+      (p.discount ? '<span class="price--off">' + esc(TLS.tpl(c.saveTemplate, { AMOUNT: money(p.mrp - p.price) })) + "</span>" : "") +
+      '<span class="rating" style="margin-left:auto">' + icon("star") +
+      esc(TLS.tpl(c.reviewsTemplate, { RATING: p.rating.toFixed(1), COUNT: p.reviews })) + "</span>" +
       "</div>" +
       '<p class="pi__desc">' + esc(p.description) + "</p>" +
       sizes +
@@ -259,32 +278,39 @@
       specs +
       features +
       '<div class="pi__actions">' +
-      '<a class="btn btn--wa" href="' + attr(TLS.waLink(msg)) + '" target="_blank" rel="noopener noreferrer">' +
-      icon("whatsapp", "btn__icon") + "Enquire on WhatsApp</a>" +
-      '<button class="btn btn--outline" type="button" id="pmShare" aria-label="Share this product">' +
-      icon("share", "btn__icon") + "Share</button>" +
+      '<a class="btn btn--wa" href="' + attr(enquiry) + '" target="_blank" rel="noopener noreferrer">' +
+      icon("whatsapp", "btn__icon") + esc(c.enquireLabel) + "</a>" +
+      '<button class="btn btn--outline" type="button" id="pmShare">' + icon("share", "btn__icon") + esc(c.shareLabel) + "</button>" +
       "</div>" +
-      '<p class="pi__note">Prices are inclusive of taxes. Colours may vary slightly on screen — visit the store to see the real finish.</p>';
+      '<p class="pi__note">' + esc(c.footnote) + "</p>";
 
-    var shareBtn = TLS.$("#pmShare", info);
-    if (shareBtn) shareBtn.addEventListener("click", function () { share(p); });
+    var shareBtn = TLS.$("#pmShare", root);
+    if (shareBtn) {
+      shareBtn.addEventListener("click", function () {
+        share(p);
+      });
+    }
   }
 
   function share(p) {
     var url = global.location.origin + global.location.pathname + global.location.search + "#p=" + p.id;
     var data = { title: p.name + " — " + S.name, text: p.name + " at " + S.name, url: url };
     if (navigator.share) {
-      navigator.share(data).catch(function () { /* user dismissed */ });
+      navigator.share(data).catch(function () {});
       return;
     }
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(url).then(
-        function () { TLS.toast("Product link copied", "copy"); },
-        function () { TLS.toast("Could not copy the link", "close"); }
+        function () {
+          TLS.toast(S.common.toastCopied, "copy");
+        },
+        function () {
+          TLS.toast(S.common.toastCopyFailed, "close");
+        }
       );
       return;
     }
-    global.prompt("Copy this product link:", url);
+    global.prompt(S.common.toastCopied, url);
   }
 
   /* ---------------- Open / close ---------------- */
@@ -316,7 +342,9 @@
     if (!isOpen || !root) return;
 
     TLS.$$("video", root).forEach(function (v) {
-      try { v.pause(); } catch (e) { /* noop */ }
+      try {
+        v.pause();
+      } catch (e) {}
     });
 
     root.classList.remove("is-open");
@@ -332,7 +360,7 @@
       } else {
         try {
           global.history.replaceState(null, "", global.location.pathname + global.location.search);
-        } catch (e) { /* noop */ }
+        } catch (e) {}
       }
     } else {
       didPush = false;
@@ -363,10 +391,4 @@
   }
 
   TLS.modal = { open: open, close: close, initFromUrl: initFromUrl };
-
-  if (doc.readyState === "loading") {
-    doc.addEventListener("DOMContentLoaded", initFromUrl);
-  } else {
-    initFromUrl();
-  }
 })(window, document);

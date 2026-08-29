@@ -1,0 +1,217 @@
+{
+  "_help": "GLOBAL SETTINGS — shared by every page. Edit the values, keep the keys. Images resolve against media.* folders below: a bare name like 'shop.jpg' becomes 'assets/img/shop.jpg'; a path starting with 'assets/' or 'http' is used as-is. Leave a media value as \"\" to fall back to generated artwork.",
+  "brand": {
+    "name": "The Leather Store",
+    "tagline": "Label of Luxury",
+    "established": 2017,
+    "url": "https://www.theleatherstore.example",
+    "description": "The Leather Store is a family-run boutique in Anantapur offering handpicked leather shoes, sandals, sneakers, sunglasses, wrist watches, handbags, wallets, travel bags and fine fragrances."
+  },
+  "contact": {
+    "phoneDisplay": "+91 90325 07164",
+    "phone": "+919032507164",
+    "whatsapp": "919032507164",
+    "email": "lovelyaziz.abdul@gmail.com"
+  },
+  "address": {
+    "line1": "Sai Nagar 6th Cross",
+    "line2": "Opposite Masjid-e-Rehmania",
+    "city": "Anantapur",
+    "state": "Andhra Pradesh",
+    "postalCode": "515001",
+    "country": "India",
+    "countryCode": "IN"
+  },
+  "map": {
+    "_help": "lat/lng place the pin on the map. directionsUrl is the Google Maps link used by every 'Get directions' button — paste a share link from Google Maps to change it.",
+    "lat": 14.6724213,
+    "lng": 77.6022883,
+    "directionsUrl": "https://maps.app.goo.gl/ZHNWeJmvwsMTpPQo7",
+    "zoom": 17,
+    "tileUrl": "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+    "tileAttribution": "&copy; <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\" rel=\"noopener\">OpenStreetMap</a> contributors",
+    "maxZoom": 19
+  },
+  "hours": [
+    {
+      "_help": "Each day lists its open windows as \"HH:MM-HH:MM\" in 24-hour time. Add a second entry for a lunch break, or use [] for a closed day.",
+      "day": "Monday",
+      "shifts": ["10:00-14:30", "17:00-21:30"]
+    },
+    {
+      "day": "Tuesday",
+      "shifts": ["10:00-14:30", "17:00-21:30"]
+    },
+    {
+      "day": "Wednesday",
+      "shifts": ["10:00-14:30", "17:00-21:30"]
+    },
+    {
+      "day": "Thursday",
+      "shifts": ["10:00-14:30", "17:00-21:30"]
+    },
+    {
+      "day": "Friday",
+      "shifts": ["10:00-12:00", "17:00-21:30"]
+    },
+    {
+      "day": "Saturday",
+      "shifts": ["10:00-14:30", "17:00-21:30"]
+    },
+    {
+      "day": "Sunday",
+      "shifts": ["10:00-14:00"]
+    }
+  ],
+  "social": {
+    "instagram": "https://www.instagram.com/the_leather_store_atp?igsi=MWp5YmZuemxzcTJmaQ==&utm_source=ig_contact_invite",
+    "facebook": "https://www.facebook.com/share/19HvCnEQfE/?mibextid=wwXIfr",
+    "telegram": "https://t.me/atpazizleatheriteams"
+  },
+  "owner": {
+    "name": "Abdul Aziz",
+    "role": "Founder & Buyer",
+    "photo": "",
+    "signature": "Abdul Aziz",
+    "bio": [
+      "Long before there was a shop, there was an eye for it. {NAME} was the boy who could spot good stitching across a room, who knew what people would be wearing a season before they did. In {ESTABLISHED} he finally gave that instinct an address, and {STORE} opened its doors in {CITY}.",
+      "He still does the buying himself. Every article on these shelves is chosen by hand — read the market, follow the trend, then go looking for the piece nobody else bothered to find. Rare collections and handpicked finds, never a bulk order off a catalogue.",
+      "That is the whole promise. If it is not something he would wear or carry himself, it does not reach the shop floor. Walk in, take your time, ask him anything — he genuinely enjoys the conversation."
+    ]
+  },
+  "commerce": {
+    "currency": "INR",
+    "currencySymbol": "₹",
+    "locale": "en-IN"
+  },
+  "media": {
+    "_help": "Where each kind of file lives. Drop your files in these folders and reference them by name only.",
+    "general": "assets/img/",
+    "productImages": "assets/img/products/",
+    "productVideos": "assets/video/",
+    "categoryImages": "assets/img/Carousel/",
+    "heroImages": "assets/img/Carousel/",
+    "demoVideo": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4"
+  },
+  "announcements": [
+    {
+      "icon": "sparkle",
+      "text": "New season arrivals in store now"
+    },
+    {
+      "icon": "sparkle",
+      "text": "Handpicked, rare collections you will not find elsewhere"
+    },
+    {
+      "icon": "sparkle",
+      "text": "Visit us 7 days a week"
+    }
+  ],
+  "header": {
+    "homeLabel": "Home",
+    "categoriesLabel": "Categories",
+    "contactLabel": "Contact Us",
+    "ctaLabel": "Enquire",
+    "ctaMessage": "Hello {STORE}, I would like to know more about your collection.",
+    "megaNoteTemplate": "{PRODUCTS} products across {CATEGORIES} categories, all in stock at the shop.",
+    "megaLinkLabel": "Browse all categories",
+    "menuLabel": "Menu",
+    "viewAllLabel": "View all categories"
+  },
+  "footer": {
+    "shopHeading": "Shop",
+    "moreHeading": "More",
+    "contactHeading": "Visit & contact",
+    "allCategoriesLabel": "All categories",
+    "directionsLabel": "Get directions",
+    "copyrightTemplate": "© {YEAR} {STORE}. All rights reserved.",
+    "legalLinks": [
+      {
+        "label": "Home",
+        "href": "index.html"
+      },
+      {
+        "label": "Categories",
+        "href": "categories.html"
+      },
+      {
+        "label": "Contact Us",
+        "href": "contact.html"
+      },
+      {
+        "label": "Store policies",
+        "href": "contact.html#store-policies"
+      }
+    ]
+  },
+  "floating": {
+    "whatsappLabel": "WhatsApp us",
+    "whatsappMessage": "Hello {STORE}! I have a question about a product.",
+    "backToTopLabel": "Back to top",
+    "chatLabel": "Chat on WhatsApp"
+  },
+  "product": {
+    "_help": "Wording used inside the product pop-up, on every page.",
+    "quickViewLabel": "Quick view",
+    "inStockBadge": "In stock at the store",
+    "soldOutBadge": "Sold out",
+    "bestsellerBadge": "Bestseller",
+    "newBadge": "New in",
+    "discountBadgeTemplate": "{PERCENT}% off",
+    "saveTemplate": "Save {AMOUNT}",
+    "reviewsTemplate": "{RATING} · {COUNT} in-store reviews",
+    "sizesLabel": "Available sizes",
+    "bottleSizeLabel": "Bottle size",
+    "coloursLabel": "Colours",
+    "enquireLabel": "Enquire on WhatsApp",
+    "shareLabel": "Share",
+    "closeLabel": "Close product details",
+    "videoTabLabel": "Play product video",
+    "footnote": "Prices are inclusive of taxes. Colours may vary slightly on screen — visit the store to see the real finish.",
+    "enquiryMessage": "Hello {STORE}!\n\nI am interested in this product:\n• {NAME} ({SKU})\n• Category: {CATEGORY}\n• Price: {PRICE}\n\nIs it available? Could you share more details?",
+    "specLabels": {
+      "sku": "SKU",
+      "category": "Category",
+      "material": "Material",
+      "style": "Style",
+      "shape": "Frame shape",
+      "lens": "Lens",
+      "movement": "Movement",
+      "strap": "Strap",
+      "family": "Fragrance family",
+      "concentration": "Concentration",
+      "gender": "Suited to",
+      "availability": "Availability"
+    },
+    "availabilityInStore": "In store",
+    "availabilityReserve": "Ask us to reserve",
+    "autoFeatures": {
+      "_help": "Bullet points added automatically when a product has no \"features\" list of its own. {MATERIAL}, {SIZES} and {COLOURS} are filled in for you.",
+      "material": "Crafted in {MATERIAL}",
+      "sizes": "Available in {SIZES} sizes",
+      "colours": "Choose from {COLOURS}",
+      "byCategory": {
+        "shoes": ["Cushioned, breathable footbed", "Try both feet in store before you decide"],
+        "sandals": ["Cushioned, breathable footbed", "Try both feet in store before you decide"],
+        "sneakers": ["Cushioned, breathable footbed", "Try both feet in store before you decide"],
+        "sunglasses": ["100% UV400 protection", "Free frame fitting and adjustment for life"],
+        "watches": ["Battery or movement serviced in store", "Free strap sizing on purchase"],
+        "handbags": ["Fully lined with reinforced stress points", "Dust bag included"],
+        "wallets": ["RFID-blocking lining", "Hand-finished, hand-painted edges"],
+        "travel-bags": ["Reinforced base and bar-tacked handles", "YKK zips throughout"],
+        "perfumes": ["Sample it on skin before you buy", "Sealed, batch-coded and 100% authentic"]
+      }
+    }
+  },
+  "common": {
+    "skipLink": "Skip to main content",
+    "openNowTemplate": "Open now · until {TIME}",
+    "closedTemplate": "Closed · opens {TIME}",
+    "closedTodayLabel": "Closed today",
+    "productsSuffix": "products",
+    "shopNowLabel": "Shop now",
+    "toastCopied": "Product link copied",
+    "toastCopyFailed": "Could not copy the link",
+    "toastAddressCopied": "Address copied to clipboard"
+  }
+}

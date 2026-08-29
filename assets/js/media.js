@@ -309,16 +309,7 @@
     logoSvg: function (size) {
       var s = size || 42;
       return (
-        '<svg class="brand__mark" viewBox="0 0 64 64" width="' + s + '" height="' + s + '" aria-hidden="true" focusable="false">' +
-        "<defs><linearGradient id='tlsLogo' x1='0' y1='0' x2='1' y2='1'>" +
-        "<stop offset='0' stop-color='#C08552'/><stop offset='1' stop-color='#8A5A30'/>" +
-        "</linearGradient></defs>" +
-        "<rect x='2' y='2' width='60' height='60' rx='16' fill='#241812'/>" +
-        "<rect x='6' y='6' width='52' height='52' rx='13' fill='none' stroke='url(#tlsLogo)' stroke-width='1.6'/>" +
-        "<path d='M18 23h28' stroke='#E0B973' stroke-width='2.4' stroke-linecap='round'/>" +
-        "<path d='M32 23v22' stroke='#E0B973' stroke-width='2.4' stroke-linecap='round'/>" +
-        "<path d='M22 45c4-3 6-7 6-11M42 45c-4-3-6-7-6-11' stroke='#C08552' stroke-width='2.2' stroke-linecap='round' fill='none'/>" +
-        "</svg>"
+        '<img class="brand__mark" src="assets/img/the-leather-store-logo.svg" width="' + s + '" height="' + Math.round(s * 0.31) + '" alt="The Leather Store logo" loading="eager" decoding="async" />'
       );
     }
   };

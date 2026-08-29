@@ -1,0 +1,141 @@
+{
+  "_help": "CONTACT PAGE (contact.html). Your address, phone, hours, map pin and bio all live in content/site.json — this file is only the wording around them. Owner photo: drop a square image in assets/img/ and set site.json → owner.photo.",
+  "meta": {
+    "title": "Contact Us & Store Location — The Leather Store",
+    "description": "Visit The Leather Store, call us or message us on WhatsApp. Find our address on the map, see opening hours and read about the people behind the counter."
+  },
+  "breadcrumb": {
+    "home": "Home",
+    "current": "Contact Us"
+  },
+  "head": {
+    "eyebrow": "We are a real shop, with real people",
+    "title": "Come and say hello",
+    "text": "Find us on {STREET} in {CITY}, right opposite Masjid-e-Rehmania. Call ahead, message us on WhatsApp, or simply walk in — someone will always be at the counter.",
+    "cta": {
+      "label": "Message us",
+      "whatsappMessage": "Hello {STORE}! I would like to visit the store."
+    }
+  },
+  "infoCards": [
+    {
+      "type": "address",
+      "icon": "pin",
+      "label": "Visit the store",
+      "cta": "Get directions"
+    },
+    {
+      "type": "phone",
+      "icon": "phone",
+      "label": "Call us",
+      "cta": "Tap to call"
+    },
+    {
+      "type": "email",
+      "icon": "mail",
+      "label": "Email us",
+      "cta": "We reply within a day"
+    },
+    {
+      "type": "hours",
+      "icon": "clock",
+      "label": "Opening hours",
+      "cta": "See full week"
+    }
+  ],
+  "hours": {
+    "title": "Opening hours",
+    "todaySuffix": "Today"
+  },
+  "map": {
+    "ariaLabel": "Map showing the store location",
+    "copyLabel": "Copy address",
+    "directionsLabel": "Directions",
+    "popupDirectionsLabel": "Get directions →",
+    "fallbackCtaLabel": "Open in OpenStreetMap"
+  },
+  "bio": {
+    "eyebrow": "Behind the counter",
+    "title": "The person who picks every piece"
+  },
+  "form": {
+    "eyebrow": "Send a message",
+    "title": "Ask us anything",
+    "text": "Looking for a specific size, colour or model? Planning a corporate gift order? Tell us what you need and we will reply from the shop, usually within a couple of hours.",
+    "privacyNote": "We never share your details, and nothing typed here is stored on this website.",
+    "submitLabel": "Send via WhatsApp",
+    "footnote": "This form opens WhatsApp with your message ready to send — nothing is stored on this website. Prefer email? Write to",
+    "topics": [
+      "General enquiry",
+      "Product availability",
+      "Bulk / corporate gifting",
+      "Repair or after-sales",
+      "Something specific you are hunting for"
+    ],
+    "fields": {
+      "name": {
+        "label": "Your name",
+        "placeholder": "e.g. Ananya Sharma",
+        "error": "Please tell us your name."
+      },
+      "phone": {
+        "label": "Phone / WhatsApp",
+        "placeholder": "e.g. +91 90325 07164",
+        "error": "Enter a valid phone number (8–15 digits)."
+      },
+      "email": {
+        "label": "Email (optional)",
+        "placeholder": "you@example.com",
+        "error": "That email address does not look right."
+      },
+      "topic": {
+        "label": "What is it about?"
+      },
+      "message": {
+        "label": "Your message",
+        "placeholder": "Tell us what you are looking for — size, colour, budget, anything helps.",
+        "error": "Please add a few more details (at least 10 characters)."
+      }
+    },
+    "toastInvalid": "Please check the highlighted fields",
+    "toastSending": "Opening WhatsApp with your message…",
+    "whatsappMessage": "Hello {STORE}!\n\nName: {NAME}\nPhone: {PHONE}\n{EMAIL_LINE}Topic: {TOPIC}\n\n{MESSAGE}"
+  },
+  "policies": {
+    "eyebrow": "Good to know",
+    "title": "Store policies",
+    "anchorId": "store-policies",
+    "items": [
+      {
+        "icon": "shield",
+        "title": "Checked by hand",
+        "text": "Nothing reaches the shelf without being inspected first. If something is not right, bring it and the bill back to the counter."
+      },
+      {
+        "icon": "refresh",
+        "title": "7-day exchange",
+        "text": "Unused, unworn items in original packaging can be exchanged within 7 days. Fragrances must be sealed."
+      },
+      {
+        "icon": "ruler",
+        "title": "Free fitting & alteration",
+        "text": "Shoe stretching, watch strap sizing and frame adjustment are free for life on anything bought here."
+      },
+      {
+        "icon": "gift",
+        "title": "Gift wrapping",
+        "text": "Complimentary on every purchase — just tell us at the counter and we will box it up properly."
+      },
+      {
+        "icon": "truck",
+        "title": "Local delivery",
+        "text": "Free within {CITY} on orders above ₹5,000. Ask us on WhatsApp."
+      },
+      {
+        "icon": "tag",
+        "title": "Transparent pricing",
+        "text": "The price on the tag is the price you pay. All taxes included, no hidden charges."
+      }
+    ]
+  }
+}

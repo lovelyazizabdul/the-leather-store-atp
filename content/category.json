@@ -1,0 +1,94 @@
+{
+  "_help": "CATEGORY / PRODUCT LISTING PAGE (category.html?cat=shoes). This file holds the wording only — the category names, filters and products all come from content/products.json.",
+  "meta": {
+    "titleTemplate": "{CATEGORY} — {STORE}",
+    "fallbackTitle": "Shop the Collection — The Leather Store",
+    "description": "Filter by size, colour, gender, material and price. Tap any product for photos, a video and full specifications."
+  },
+  "breadcrumb": {
+    "home": "Home",
+    "categories": "Categories"
+  },
+  "head": {
+    "cta": {
+      "label": "All categories",
+      "icon": "grid",
+      "href": "categories.html"
+    }
+  },
+  "filters": {
+    "title": "Filters",
+    "clearLabel": "Clear all",
+    "closeLabel": "Close filters",
+    "priceLabel": "Price",
+    "minPriceLabel": "Minimum price",
+    "maxPriceLabel": "Maximum price",
+    "inStockLabel": "In stock only",
+    "applyLabel": "Show results",
+    "optionCountTitle": "{COUNT} products"
+  },
+  "toolbar": {
+    "filtersLabel": "Filters",
+    "sortLabel": "Sort products by",
+    "countTemplate": "{COUNT} {NOUN} in {CATEGORY}",
+    "nounSingular": "product",
+    "nounPlural": "products"
+  },
+  "sorts": [
+    {
+      "id": "featured",
+      "label": "Featured"
+    },
+    {
+      "id": "price-asc",
+      "label": "Price: low to high"
+    },
+    {
+      "id": "price-desc",
+      "label": "Price: high to low"
+    },
+    {
+      "id": "rating",
+      "label": "Top rated"
+    },
+    {
+      "id": "new",
+      "label": "Newest first"
+    },
+    {
+      "id": "name",
+      "label": "Name: A to Z"
+    }
+  ],
+  "empty": {
+    "title": "Nothing matches those filters",
+    "text": "Try widening the price range or removing a colour or size. If you cannot find what you are after, message us — we often have more in the back.",
+    "ctaLabel": "Ask us on WhatsApp",
+    "whatsappMessage": "Hello {STORE}! I am looking for something in {CATEGORY}. Can you help?"
+  },
+  "related": {
+    "eyebrow": "Keep exploring",
+    "title": "Other collections in store",
+    "linkLabel": "All categories",
+    "linkHref": "categories.html",
+    "limit": 4
+  },
+  "notFound": {
+    "code": "?",
+    "title": "We could not find that category",
+    "textTemplate": "“{ID}” is not one of our collections.",
+    "textEmpty": "No category was requested.",
+    "buttons": [
+      {
+        "label": "Browse all categories",
+        "href": "categories.html",
+        "style": "solid"
+      },
+      {
+        "label": "Back to home",
+        "href": "index.html",
+        "style": "outline"
+      }
+    ]
+  }
+}

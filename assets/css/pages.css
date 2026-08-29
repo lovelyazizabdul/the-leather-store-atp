@@ -1038,6 +1038,12 @@
   border-bottom: 1px dashed var(--c-line-strong);
 }
 
+/* Days with a lunch break list each window on its own line. */
+.hours__time {
+  text-align: right;
+  white-space: nowrap;
+}
+
 .hours__row:last-child {
   border-bottom: 0;
 }
@@ -1047,8 +1053,7 @@
   color: var(--c-espresso);
 }
 
-.hours__row.is-today span:first-child::after {
-  content: " • Today";
+.hours__today {
   color: var(--c-brass);
   font-weight: 600;
 }

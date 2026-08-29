@@ -1,0 +1,30 @@
+{
+  "_help": "CATEGORIES PAGE (categories.html). The tiles themselves come from content/products.json → \"categories\".",
+  "meta": {
+    "title": "All Categories — The Leather Store",
+    "description": "Browse all nine collections at The Leather Store: shoes, sandals, sneakers, sun glasses, wrist watches, ladies handbags, gents wallets, travel bags and perfumes."
+  },
+  "breadcrumb": {
+    "home": "Home",
+    "current": "Categories"
+  },
+  "head": {
+    "eyebrow": "{PRODUCTS} products in store",
+    "title": "Shop by category",
+    "text": "Nine collections, every one of them stocked on the shop floor today. Pick a category to filter by size, colour, gender and more.",
+    "cta": {
+      "label": "See the full catalog",
+      "icon": "grid",
+      "href": "index.html#catalog"
+    }
+  },
+  "picks": {
+    "eyebrow": "Counter favourites",
+    "title": "What people keep buying",
+    "text": "The pieces our team recommends most often — and the ones we restock the fastest.",
+    "linkLabel": "See the full catalog",
+    "linkHref": "index.html#catalog",
+    "limit": 8,
+    "source": "bestseller"
+  }
+}

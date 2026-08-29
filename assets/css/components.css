@@ -298,8 +298,12 @@
 }
 
 .brand__mark {
-  width: 42px;
-  height: 42px;
+  display: block;
+  width: clamp(8.75rem, 16vw, 11.25rem);
+  max-width: 100%;
+  height: auto;
+  aspect-ratio: 720 / 220;
+  object-fit: contain;
   flex: none;
 }
 
@@ -517,6 +521,16 @@
 
   .burger {
     display: flex;
+  }
+
+  .brand__mark {
+    width: clamp(7.5rem, 38vw, 9.5rem);
+  }
+}
+
+@media (max-width: 640px) {
+  .brand__mark {
+    width: clamp(6.5rem, 46vw, 8.25rem);
   }
 }
 
@@ -1810,6 +1824,13 @@
   visibility: visible;
 }
 
+/* Belt and braces: a closed overlay must never swallow clicks mid-transition */
+.modal:not(.is-open),
+.overlay:not(.is-open),
+.drawer:not(.is-open) {
+  pointer-events: none;
+}
+
 .modal__backdrop {
   position: absolute;
   inset: 0;
@@ -1933,7 +1954,10 @@
   transition: opacity var(--t) var(--ease), visibility var(--t);
 }
 
-.pv__media.is-active {
+/* Must stay scoped to the open modal: a descendant `visibility: visible`
+   overrides an ancestor's `visibility: hidden` and would leave this image
+   hit-testable over the page after the modal closes. */
+.modal.is-open .pv__media.is-active {
   opacity: 1;
   visibility: visible;
 }

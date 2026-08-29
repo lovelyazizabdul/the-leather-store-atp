@@ -1,0 +1,31 @@
+{
+  "_help": "NOT FOUND PAGE (404.html).",
+  "meta": {
+    "title": "Page not found — The Leather Store",
+    "description": "The page you were looking for is not here."
+  },
+  "code": "404",
+  "title": "This shelf is empty",
+  "text": "The page you were looking for has moved, or never existed. The good news is that everything we stock is only one click away.",
+  "buttons": [
+    {
+      "label": "Back to home",
+      "href": "index.html",
+      "style": "solid"
+    },
+    {
+      "label": "Browse categories",
+      "href": "categories.html",
+      "style": "outline"
+    },
+    {
+      "label": "Contact us",
+      "href": "contact.html",
+      "style": "outline"
+    }
+  ],
+  "section": {
+    "eyebrow": "While you are here",
+    "title": "Our nine collections"
+  }
+}

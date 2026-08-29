@@ -1,30 +1,67 @@
 /* ==========================================================================
    The Leather Store — categories.js
-   Categories index page.
+   Categories index page, driven by content/categories.json.
    ========================================================================== */
 (function (global, doc) {
   "use strict";
 
-  var TLS = global.TLS;
+  var TLS = (global.TLS = global.TLS || {});
   var D = TLS.DATA;
-  var icon = TLS.icon;
-  var esc = TLS.esc;
 
-  function init() {
-    var head = TLS.$("#pageHead");
+  function renderHead(page) {
+    var host = TLS.$("#pageHead");
+    var head = page.head || {};
+    var crumb = page.breadcrumb || {};
+    if (!host) return;
+
+    host.innerHTML =
+      '<div class="container">' +
+      TLS.breadcrumbHTML([
+        { label: crumb.home || "Home", href: "index.html" },
+        { label: crumb.current || "Categories" }
+      ]) +
+      '<div class="page-head__inner" style="margin-top:1.1rem">' +
+      '<div class="page-head__text">' +
+      '<span class="eyebrow">' + TLS.esc(TLS.tpl(head.eyebrow)) + "</span>" +
+      '<h1 class="page-head__title">' + TLS.rich(head.title) + "</h1>" +
+      '<p class="lede">' + TLS.esc(TLS.tpl(head.text)) + "</p>" +
+      "</div>" +
+      (head.cta
+        ? '<a class="btn btn--outline" href="' + TLS.attr(head.cta.href) + '">' +
+          (head.cta.icon ? TLS.icon(head.cta.icon, "btn__icon") : "") + TLS.esc(head.cta.label) + "</a>"
+        : "") +
+      "</div></div>";
+  }
+
+  function renderPicks(page) {
+    var cfg = page.picks || {};
+    var head = TLS.$("#picksHead");
+    var grid = TLS.$("#staffPicks");
+
     if (head) {
       head.innerHTML =
-        '<div class="container">' +
-        TLS.breadcrumbHTML([{ label: "Home", href: "index.html" }, { label: "Categories" }]) +
-        '<div class="page-head__inner" style="margin-top:1.1rem">' +
-        '<div class="page-head__text">' +
-        '<span class="eyebrow">' + D.PRODUCTS.length + " products in store</span>" +
-        '<h1 class="page-head__title">Shop by category</h1>' +
-        '<p class="lede">Nine collections, every one of them stocked on the shop floor today. Pick a category to filter by size, colour, gender and more.</p>' +
+        '<div class="section-head__text reveal">' +
+        '<span class="eyebrow">' + TLS.esc(TLS.tpl(cfg.eyebrow)) + "</span>" +
+        '<h2 class="h-section">' + TLS.rich(cfg.title) + "</h2>" +
+        '<p class="lede">' + TLS.esc(TLS.tpl(cfg.text)) + "</p>" +
         "</div>" +
-        '<a class="btn btn--outline" href="index.html#catalog">' + icon("grid", "btn__icon") + "See the full catalog</a>" +
-        "</div></div>";
+        (cfg.linkLabel
+          ? '<a class="link-arrow reveal" href="' + TLS.attr(cfg.linkHref || "#") + '">' + TLS.esc(cfg.linkLabel) + "</a>"
+          : "");
     }
+
+    if (grid) {
+      var list = cfg.source === "new" ? D.newArrivals(cfg.limit) : D.bestsellers(cfg.limit);
+      grid.innerHTML = list
+        .map(function (p) {
+          return TLS.productCardHTML(p);
+        })
+        .join("");
+    }
+  }
+
+  TLS.start("categories", function (page) {
+    renderHead(page);
 
     var grid = TLS.$("#categoriesGrid");
     if (grid) {
@@ -36,16 +73,6 @@
       }).join("");
     }
 
-    var picks = TLS.$("#staffPicks");
-    if (picks) {
-      picks.innerHTML = D.bestsellers(8)
-        .map(function (p) { return TLS.productCardHTML(p); })
-        .join("");
-    }
-
-    TLS.initReveal();
-  }
-
-  if (doc.readyState === "loading") doc.addEventListener("DOMContentLoaded", init);
-  else init();
+    renderPicks(page);
+  });
 })(window, document);
