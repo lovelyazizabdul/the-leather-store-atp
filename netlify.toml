@@ -60,6 +60,13 @@
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 
+# Content JSON must never be cached — an edit should be live on the next reload.
+[[headers]]
+  for = "/content/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+    Content-Type = "application/json; charset=utf-8"
+
 [[headers]]
   for = "/*.html"
   [headers.values]

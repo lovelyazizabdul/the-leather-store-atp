@@ -6,27 +6,21 @@
     <meta name="theme-color" content="#241812" />
     <meta name="color-scheme" content="light" />
 
-    <title>The Leather Store — Handpicked Leather Shoes, Bags, Watches &amp; More</title>
-    <meta
-      name="description"
-      content="The Leather Store is a family-run boutique for handpicked leather shoes, sandals, sneakers, sunglasses, wrist watches, ladies handbags, gents wallets, travel bags and perfumes. Visit us in store."
-    />
-    <meta name="author" content="The Leather Store" />
+    <!-- Title and description are filled from content/home.json ▸ meta -->
+    <title>The Leather Store</title>
+    <meta name="description" content="" />
     <link rel="canonical" href="https://www.theleatherstore.example/" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="The Leather Store" />
     <meta property="og:title" content="The Leather Store — Handpicked Leather &amp; Lifestyle" />
-    <meta
-      property="og:description"
-      content="Nine collections of leather goods, eyewear, timepieces and fragrance — hand-checked, fitted in store and backed by a one-year craftsmanship warranty."
-    />
+    <meta property="og:description" content="" />
     <meta property="og:image" content="assets/img/og-image.svg" />
     <meta property="og:url" content="https://www.theleatherstore.example/" />
     <meta name="twitter:card" content="summary_large_image" />
 
-    <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
-    <link rel="mask-icon" href="assets/img/favicon.svg" color="#241812" />
+    <link rel="icon" href="assets/img/favicon.svg?v=20260829c" type="image/svg+xml" />
+    <link rel="mask-icon" href="assets/img/favicon.svg?v=20260829c" color="#241812" />
     <link rel="manifest" href="site.webmanifest" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -35,94 +29,84 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,600&family=Inter:wght@300;400;500;600;700&display=swap"
     />
-    <link rel="stylesheet" href="assets/css/base.css" />
-    <link rel="stylesheet" href="assets/css/components.css" />
-    <link rel="stylesheet" href="assets/css/pages.css" />
+    <link rel="stylesheet" href="assets/css/base.css?v=20260829c" />
+    <link rel="stylesheet" href="assets/css/components.css?v=20260829c" />
+    <link rel="stylesheet" href="assets/css/pages.css?v=20260829c" />
   </head>
 
   <body data-page="home">
     <a class="skip-link" href="#main">Skip to main content</a>
 
     <noscript>
-      <p class="ns-banner">
-        This catalogue is rendered with JavaScript. Please enable it, or call us on
-        <a href="tel:+919876543210" style="color:#fff;text-decoration:underline">+91 98765 43210</a>.
-      </p>
+      <p class="ns-banner">This catalogue is rendered with JavaScript. Please enable it to browse our collections.</p>
     </noscript>
 
     <header id="site-header"></header>
 
     <main id="main">
-      <!-- ============ HERO CAROUSEL ============ -->
-      <section id="hero" aria-label="Featured collections"></section>
+      <!-- Hero carousel · content/home.json ▸ hero -->
+      <section id="hero"></section>
 
-      <!-- ============ MARQUEE ============ -->
+      <!-- Marquee · content/home.json ▸ marquee -->
       <div id="marquee" class="marquee" aria-hidden="true"></div>
 
-      <!-- ============ VALUE PROPS ============ -->
+      <!-- Value props · content/home.json ▸ values -->
       <section class="section section--tight" aria-label="Why shop with us">
         <div class="container">
           <div id="values" class="values"></div>
         </div>
       </section>
 
-      <!-- ============ CATEGORY SHOWCASE ============ -->
+      <!-- Category showcase · content/home.json ▸ categoriesSection -->
       <section class="section section--alt" id="categories" aria-labelledby="catsTitle">
         <div class="container">
           <div class="section-head">
             <div class="section-head__text reveal">
-              <span class="eyebrow">Nine collections</span>
-              <h2 class="h-section" id="catsTitle">Everything under one roof</h2>
-              <p class="lede">
-                Footwear, eyewear, timepieces, bags and fragrance — curated by hand, stocked on the shelf,
-                and ready to try on today.
-              </p>
+              <span class="eyebrow" id="catsEyebrow"></span>
+              <h2 class="h-section" id="catsTitle"></h2>
+              <p class="lede" id="catsText"></p>
             </div>
-            <a class="link-arrow reveal" href="categories.html">View all categories</a>
+            <a class="link-arrow reveal" id="catsLink" href="categories.html"></a>
           </div>
           <div id="categoryGrid" class="cat-grid"></div>
         </div>
       </section>
 
-      <!-- ============ FULL CATALOG ============ -->
+      <!-- Full catalog · content/home.json ▸ catalog + content/products.json -->
       <section class="section" id="catalog" aria-labelledby="catalogTitle">
         <div class="container">
           <div class="section-head section-head--center">
             <div class="section-head__text reveal">
-              <span class="eyebrow eyebrow--center">The complete catalog</span>
-              <h2 class="h-section" id="catalogTitle">Every item in the store</h2>
-              <p class="lede">
-                Browse the whole shop below, or jump to a collection. Tap any product for photos, a video
-                and full specifications.
-              </p>
+              <span class="eyebrow eyebrow--center" id="catalogEyebrow"></span>
+              <h2 class="h-section" id="catalogTitle"></h2>
+              <p class="lede" id="catalogText"></p>
             </div>
           </div>
 
           <div id="catalogTabs" class="tabs no-scrollbar" role="tablist" aria-label="Filter the catalog by category"></div>
-
           <div id="catalogList" style="margin-top: clamp(1.75rem, 1.2rem + 2vw, 3rem)"></div>
         </div>
       </section>
 
-      <!-- ============ STORY ============ -->
+      <!-- Story · content/home.json ▸ story -->
       <section class="section section--alt" aria-label="Our story">
         <div class="container" id="story"></div>
       </section>
 
-      <!-- ============ TESTIMONIALS ============ -->
+      <!-- Testimonials · content/home.json ▸ reviews -->
       <section class="section section--dark" aria-labelledby="revTitle">
         <div class="container">
           <div class="section-head section-head--center">
             <div class="section-head__text">
-              <span class="eyebrow eyebrow--center" style="color: var(--c-gold)">In their words</span>
-              <h2 class="h-section" id="revTitle">Customers who keep coming back</h2>
+              <span class="eyebrow eyebrow--center" id="revEyebrow" style="color: var(--c-gold)"></span>
+              <h2 class="h-section" id="revTitle"></h2>
             </div>
           </div>
           <div id="reviews" class="quotes"></div>
         </div>
       </section>
 
-      <!-- ============ VISIT CTA ============ -->
+      <!-- Visit CTA · content/home.json ▸ visitCta -->
       <section class="section" aria-label="Visit the store">
         <div class="container">
           <div class="cta-band reveal" id="visitCta"></div>
@@ -132,12 +116,12 @@
 
     <footer id="site-footer"></footer>
 
-    <script src="assets/js/site.config.js"></script>
-    <script src="assets/js/data/products.js"></script>
-    <script src="assets/js/icons.js"></script>
-    <script src="assets/js/media.js"></script>
-    <script src="assets/js/ui.js"></script>
-    <script src="assets/js/modal.js"></script>
+    <script src="assets/js/content.js?v=20260829c"></script>
+    <script src="assets/js/catalog.js?v=20260829c"></script>
+    <script src="assets/js/icons.js?v=20260829c"></script>
+    <script src="assets/js/media.js?v=20260829c"></script>
+    <script src="assets/js/ui.js?v=20260829c"></script>
+    <script src="assets/js/modal.js?v=20260829c"></script>
     <script src="assets/js/home.js"></script>
   </body>
 </html>

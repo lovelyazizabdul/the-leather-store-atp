@@ -6,21 +6,19 @@
     <meta name="theme-color" content="#241812" />
     <meta name="color-scheme" content="light" />
 
+    <!-- Filled from content/contact.json ▸ meta -->
     <title>Contact Us &amp; Store Location — The Leather Store</title>
-    <meta
-      name="description"
-      content="Visit The Leather Store, call us or message us on WhatsApp. Find our address on the map, see opening hours and read about the people behind the counter."
-    />
+    <meta name="description" content="" />
     <link rel="canonical" href="https://www.theleatherstore.example/contact.html" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="The Leather Store" />
     <meta property="og:title" content="Contact Us — The Leather Store" />
-    <meta property="og:description" content="Find us on the map, see opening hours, and message us on WhatsApp." />
+    <meta property="og:description" content="" />
     <meta property="og:image" content="assets/img/og-image.svg" />
     <meta name="twitter:card" content="summary_large_image" />
 
-    <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="assets/img/favicon.svg?v=20260829c" type="image/svg+xml" />
     <link rel="manifest" href="site.webmanifest" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -38,18 +36,16 @@
       crossorigin=""
     />
 
-    <link rel="stylesheet" href="assets/css/base.css" />
-    <link rel="stylesheet" href="assets/css/components.css" />
-    <link rel="stylesheet" href="assets/css/pages.css" />
+    <link rel="stylesheet" href="assets/css/base.css?v=20260829c" />
+    <link rel="stylesheet" href="assets/css/components.css?v=20260829c" />
+    <link rel="stylesheet" href="assets/css/pages.css?v=20260829c" />
   </head>
 
   <body data-page="contact">
     <a class="skip-link" href="#main">Skip to main content</a>
 
     <noscript>
-      <p class="ns-banner">
-        Some parts of this page need JavaScript. Our address and phone number are in the footer below.
-      </p>
+      <p class="ns-banner">Some parts of this page need JavaScript. Please enable it to see our address and map.</p>
     </noscript>
 
     <header id="site-header"></header>
@@ -57,7 +53,7 @@
     <main id="main">
       <section class="page-head" id="pageHead"></section>
 
-      <!-- ============ INFO + MAP ============ -->
+      <!-- Info cards, hours and map · data from content/site.json -->
       <section class="section" aria-label="How to reach us">
         <div class="container">
           <div class="contact-grid">
@@ -65,13 +61,13 @@
               <div id="infoCards" class="info-cards"></div>
 
               <div id="hours" style="scroll-margin-top: calc(var(--header-h) + 24px)">
-                <h2 class="h-card" style="margin-bottom: 0.75rem; font-size: var(--fs-lg)">Opening hours</h2>
+                <h2 class="h-card" id="hoursTitle" style="margin-bottom: 0.75rem; font-size: var(--fs-lg)"></h2>
                 <div class="hours" id="hoursList"></div>
               </div>
             </div>
 
             <div class="map-card reveal" id="mapCard">
-              <div id="map" class="map" role="application" aria-label="Map showing the store location"></div>
+              <div id="map" class="map" role="application"></div>
               <div class="map__fallback"></div>
               <div class="map-card__foot"></div>
             </div>
@@ -79,50 +75,33 @@
         </div>
       </section>
 
-      <!-- ============ BIO ============ -->
+      <!-- Bio · content/site.json ▸ owner -->
       <section class="section section--alt" aria-labelledby="bioHeading">
         <div class="container">
-          <div class="section-head section-head--center">
-            <div class="section-head__text">
-              <span class="eyebrow eyebrow--center">Behind the counter</span>
-              <h2 class="h-section" id="bioHeading">The person who picks every piece</h2>
-            </div>
-          </div>
+          <div class="section-head section-head--center" id="bioHead"></div>
           <div id="bio"></div>
         </div>
       </section>
 
-      <!-- ============ FORM ============ -->
+      <!-- Enquiry form · content/contact.json ▸ form -->
       <section class="section" aria-labelledby="formHeading">
         <div class="container">
           <div class="contact-grid">
-            <div class="stack">
-              <span class="eyebrow">Send a message</span>
-              <h2 class="h-section" id="formHeading">Ask us anything</h2>
-              <p class="lede">
-                Looking for a specific size, colour or model? Planning a corporate gift order? Tell us what you
-                need and we will reply from the shop, usually within a couple of hours.
-              </p>
-              <p class="muted" style="font-size: var(--fs-sm)">
-                We never share your details, and nothing typed here is stored on this website.
-              </p>
-              <div style="display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.5rem" id="contactSocials"></div>
-            </div>
-
+            <div class="stack" id="formIntro"></div>
             <form class="form" id="enquiryForm" novalidate></form>
           </div>
         </div>
       </section>
 
-      <!-- ============ POLICIES ============ -->
-      <section class="section section--alt" id="store-policies" aria-labelledby="polHeading" style="scroll-margin-top: calc(var(--header-h) + 24px)">
+      <!-- Policies · content/contact.json ▸ policies -->
+      <section
+        class="section section--alt"
+        id="policiesSection"
+        aria-labelledby="polHeading"
+        style="scroll-margin-top: calc(var(--header-h) + 24px)"
+      >
         <div class="container">
-          <div class="section-head section-head--center">
-            <div class="section-head__text">
-              <span class="eyebrow eyebrow--center">Good to know</span>
-              <h2 class="h-section" id="polHeading">Store policies</h2>
-            </div>
-          </div>
+          <div class="section-head section-head--center" id="policiesHead"></div>
           <div id="policies" class="values"></div>
         </div>
       </section>
@@ -136,12 +115,12 @@
       crossorigin=""
     ></script>
 
-    <script src="assets/js/site.config.js"></script>
-    <script src="assets/js/data/products.js"></script>
-    <script src="assets/js/icons.js"></script>
-    <script src="assets/js/media.js"></script>
-    <script src="assets/js/ui.js"></script>
-    <script src="assets/js/modal.js"></script>
-    <script src="assets/js/contact.js"></script>
+    <script src="assets/js/content.js?v=20260829c"></script>
+    <script src="assets/js/catalog.js?v=20260829c"></script>
+    <script src="assets/js/icons.js?v=20260829c"></script>
+    <script src="assets/js/media.js?v=20260829c"></script>
+    <script src="assets/js/ui.js?v=20260829c"></script>
+    <script src="assets/js/modal.js?v=20260829c"></script>
+    <script src="assets/js/contact.js?v=20260829c"></script>
   </body>
 </html>
