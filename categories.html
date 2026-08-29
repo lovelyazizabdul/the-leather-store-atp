@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#241812" />
+    <meta name="color-scheme" content="light" />
+
+    <title>All Categories — The Leather Store</title>
+    <meta
+      name="description"
+      content="Browse all nine collections at The Leather Store: shoes, sandals, sneakers, sun glasses, wrist watches, ladies handbags, gents wallets, travel bags and perfumes."
+    />
+    <link rel="canonical" href="https://www.theleatherstore.example/categories.html" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="The Leather Store" />
+    <meta property="og:title" content="All Categories — The Leather Store" />
+    <meta property="og:description" content="Nine curated collections of leather goods, eyewear, timepieces and fragrance." />
+    <meta property="og:image" content="assets/img/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="site.webmanifest" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,600&family=Inter:wght@300;400;500;600;700&display=swap"
+    />
+    <link rel="stylesheet" href="assets/css/base.css" />
+    <link rel="stylesheet" href="assets/css/components.css" />
+    <link rel="stylesheet" href="assets/css/pages.css" />
+  </head>
+
+  <body data-page="categories">
+    <a class="skip-link" href="#main">Skip to main content</a>
+
+    <noscript>
+      <p class="ns-banner">This catalogue is rendered with JavaScript. Please enable it to browse our collections.</p>
+    </noscript>
+
+    <header id="site-header"></header>
+
+    <main id="main">
+      <section class="page-head" id="pageHead"></section>
+
+      <section class="section" aria-label="All categories">
+        <div class="container">
+          <div id="categoriesGrid" class="cats-index"></div>
+        </div>
+      </section>
+
+      <section class="section section--alt" aria-labelledby="picksTitle">
+        <div class="container">
+          <div class="section-head">
+            <div class="section-head__text reveal">
+              <span class="eyebrow">Counter favourites</span>
+              <h2 class="h-section" id="picksTitle">What people keep buying</h2>
+              <p class="lede">The pieces our team recommends most often — and the ones we restock the fastest.</p>
+            </div>
+            <a class="link-arrow reveal" href="index.html#catalog">See the full catalog</a>
+          </div>
+          <div id="staffPicks" class="card-grid"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer id="site-footer"></footer>
+
+    <script src="assets/js/site.config.js"></script>
+    <script src="assets/js/data/products.js"></script>
+    <script src="assets/js/icons.js"></script>
+    <script src="assets/js/media.js"></script>
+    <script src="assets/js/ui.js"></script>
+    <script src="assets/js/modal.js"></script>
+    <script src="assets/js/categories.js"></script>
+  </body>
+</html>

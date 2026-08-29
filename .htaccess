@@ -1,0 +1,87 @@
+# ---------------------------------------------------------------------------
+# Apache / cPanel / shared-hosting configuration
+# Upload the whole folder to public_html and this file does the rest.
+# ---------------------------------------------------------------------------
+
+# ---- Default document -----------------------------------------------------
+DirectoryIndex index.html
+
+# ---- Friendly 404 ---------------------------------------------------------
+ErrorDocument 404 /404.html
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # Force HTTPS — uncomment once your SSL certificate is active
+  # RewriteCond %{HTTPS} !=on
+  # RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # Force the www (or non-www) host — pick ONE and uncomment
+  # RewriteCond %{HTTP_HOST} !^www\. [NC]
+  # RewriteRule ^(.*)$ https://www.%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # Pretty URLs: /contact  ->  /contact.html (both forms keep working)
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME}\.html -f
+  RewriteRule ^(.+?)/?$ $1.html [L]
+
+  # Optional: force the extensionless form as the single canonical URL.
+  # Leave this commented out unless you also update every internal link,
+  # otherwise each in-site click costs an extra 301 round trip.
+  # RewriteCond %{THE_REQUEST} \s/+(.+?)\.html[\s?] [NC]
+  # RewriteRule ^ /%1 [R=301,L]
+</IfModule>
+
+# ---- Compression ----------------------------------------------------------
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml
+  AddOutputFilterByType DEFLATE application/javascript application/json
+  AddOutputFilterByType DEFLATE image/svg+xml application/manifest+json
+</IfModule>
+
+# ---- Caching --------------------------------------------------------------
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/html                 "access plus 0 seconds"
+  # CSS/JS filenames are not content-hashed, so they must revalidate.
+  ExpiresByType text/css                  "access plus 0 seconds"
+  ExpiresByType application/javascript    "access plus 0 seconds"
+  ExpiresByType image/svg+xml             "access plus 1 year"
+  ExpiresByType image/jpeg                "access plus 1 year"
+  ExpiresByType image/png                 "access plus 1 year"
+  ExpiresByType image/webp                "access plus 1 year"
+  ExpiresByType video/mp4                 "access plus 1 year"
+  ExpiresByType font/woff2                "access plus 1 year"
+</IfModule>
+
+# ---- Correct MIME types ---------------------------------------------------
+<IfModule mod_mime.c>
+  AddType image/svg+xml                 .svg
+  AddType application/manifest+json     .webmanifest
+  AddType video/mp4                     .mp4
+  AddType font/woff2                    .woff2
+</IfModule>
+
+# ---- Security headers -----------------------------------------------------
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "DENY"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "geolocation=(), microphone=(), camera=(), payment=()"
+  # Enable once HTTPS is live:
+  # Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+  Header always set Content-Security-Policy "default-src 'self'; base-uri 'self'; frame-ancestors 'none'; object-src 'none'; img-src 'self' data: https://tile.openstreetmap.org https://*.tile.openstreetmap.org https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline' https://unpkg.com; media-src 'self' https://commondatastorage.googleapis.com; connect-src 'self'; form-action 'self'"
+
+  <FilesMatch "\.(svg|jpg|jpeg|png|webp|mp4|woff2)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+
+  <FilesMatch "\.(css|js|html)$">
+    Header set Cache-Control "public, max-age=0, must-revalidate"
+  </FilesMatch>
+</IfModule>
+
+# ---- Do not serve source/config files -------------------------------------
+<FilesMatch "^(README\.md|package\.json|netlify\.toml|vercel\.json|\.gitignore)$">
+  Require all denied
+</FilesMatch>

@@ -1,0 +1,32 @@
+{
+  "name": "The Leather Store",
+  "short_name": "Leather Store",
+  "description": "Handpicked leather shoes, sandals, sneakers, sunglasses, wrist watches, handbags, wallets, travel bags and perfumes.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#FDFBF8",
+  "theme_color": "#241812",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["shopping", "lifestyle"],
+  "icons": [
+    {
+      "src": "assets/img/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/img/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    { "name": "All categories", "url": "./categories.html" },
+    { "name": "Contact us", "url": "./contact.html" }
+  ]
+}

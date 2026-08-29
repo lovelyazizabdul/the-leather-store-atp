@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#241812" />
+    <meta name="robots" content="noindex" />
+    <title>Page not found — The Leather Store</title>
+    <meta name="description" content="The page you were looking for is not here." />
+
+    <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,600&family=Inter:wght@300;400;500;600;700&display=swap"
+    />
+    <link rel="stylesheet" href="/assets/css/base.css" />
+    <link rel="stylesheet" href="/assets/css/components.css" />
+    <link rel="stylesheet" href="/assets/css/pages.css" />
+    <base href="/" />
+  </head>
+
+  <body data-page="404">
+    <a class="skip-link" href="#main">Skip to main content</a>
+    <header id="site-header"></header>
+
+    <main id="main">
+      <div class="container nf">
+        <span class="nf__code">404</span>
+        <h1 class="display-2">This shelf is empty</h1>
+        <p class="lede" style="max-width: 52ch">
+          The page you were looking for has moved, or never existed. The good news is that everything we stock is
+          only one click away.
+        </p>
+        <div class="cta-band__actions">
+          <a class="btn btn--lg" href="index.html">Back to home</a>
+          <a class="btn btn--outline btn--lg" href="categories.html">Browse categories</a>
+          <a class="btn btn--outline btn--lg" href="contact.html">Contact us</a>
+        </div>
+      </div>
+
+      <section class="section section--alt" aria-labelledby="nfTitle">
+        <div class="container">
+          <div class="section-head section-head--center">
+            <div class="section-head__text">
+              <span class="eyebrow eyebrow--center">While you are here</span>
+              <h2 class="h-section" id="nfTitle">Our nine collections</h2>
+            </div>
+          </div>
+          <div id="categoriesGrid" class="cats-index"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer id="site-footer"></footer>
+
+    <script src="assets/js/site.config.js"></script>
+    <script src="assets/js/data/products.js"></script>
+    <script src="assets/js/icons.js"></script>
+    <script src="assets/js/media.js"></script>
+    <script src="assets/js/ui.js"></script>
+    <script src="assets/js/modal.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var grid = document.getElementById("categoriesGrid");
+        if (grid && window.TLS) {
+          grid.innerHTML = TLS.DATA.CATEGORIES.map(function (c) {
+            return TLS.categoryTileHTML(c);
+          }).join("");
+        }
+      });
+    </script>
+  </body>
+</html>
