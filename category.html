@@ -6,21 +6,19 @@
     <meta name="theme-color" content="#241812" />
     <meta name="color-scheme" content="light" />
 
+    <!-- Filled from content/category.json ▸ meta -->
     <title>Shop the Collection — The Leather Store</title>
-    <meta
-      name="description"
-      content="Filter by size, colour, gender, material and price. Tap any product for photos, a video and full specifications."
-    />
+    <meta name="description" content="" />
     <link rel="canonical" href="https://www.theleatherstore.example/category.html" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="The Leather Store" />
     <meta property="og:title" content="Shop the Collection — The Leather Store" />
-    <meta property="og:description" content="Filter by size, colour, gender, material and price." />
+    <meta property="og:description" content="" />
     <meta property="og:image" content="assets/img/og-image.svg" />
     <meta name="twitter:card" content="summary_large_image" />
 
-    <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="assets/img/favicon.svg?v=20260829c" type="image/svg+xml" />
     <link rel="manifest" href="site.webmanifest" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -29,9 +27,9 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,600&family=Inter:wght@300;400;500;600;700&display=swap"
     />
-    <link rel="stylesheet" href="assets/css/base.css" />
-    <link rel="stylesheet" href="assets/css/components.css" />
-    <link rel="stylesheet" href="assets/css/pages.css" />
+    <link rel="stylesheet" href="assets/css/base.css?v=20260829c" />
+    <link rel="stylesheet" href="assets/css/components.css?v=20260829c" />
+    <link rel="stylesheet" href="assets/css/pages.css?v=20260829c" />
   </head>
 
   <body data-page="category">
@@ -49,12 +47,11 @@
       <section class="section" aria-label="Products">
         <div class="container">
           <div class="shop">
-            <!-- ============ FILTERS ============ -->
+            <!-- Filters · built from content/products.json, labelled by content/category.json -->
             <aside class="shop__aside" id="shopAside" role="dialog" aria-label="Product filters" tabindex="-1">
               <div class="filters" id="filters"></div>
             </aside>
 
-            <!-- ============ RESULTS ============ -->
             <div class="shop__main">
               <div class="shop__toolbar">
                 <p class="shop__count" id="resultCount" role="status" aria-live="polite"></p>
@@ -67,20 +64,20 @@
                     aria-expanded="false"
                     aria-controls="shopAside"
                   >
-                    <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <svg class="ico btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                       <path d="M4 6.5h8M17.5 6.5H20M4 12h3.5M13 12h7M4 17.5h8M17.5 17.5H20" />
                       <circle cx="14.5" cy="6.5" r="2.2" />
                       <circle cx="10" cy="12" r="2.2" />
                       <circle cx="14.5" cy="17.5" r="2.2" />
                     </svg>
-                    Filters
+                    <span id="filterToggleLabel">Filters</span>
                     <span class="filter-toggle__n" id="filterCount" style="display: none">0</span>
                   </button>
 
                   <div class="select">
-                    <label class="visually-hidden" for="sortBy">Sort products by</label>
+                    <label class="visually-hidden" for="sortBy" id="sortLabel">Sort products by</label>
                     <select id="sortBy"></select>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                       <path d="M6 9l6 6 6-6" />
                     </svg>
                   </div>
@@ -88,38 +85,17 @@
               </div>
 
               <div class="active-chips" id="activeChips"></div>
-
               <div class="card-grid" id="productGrid"></div>
-
-              <div class="empty" id="emptyState" hidden>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M21 7.8L12 2.9 3 7.8v8.4l9 4.9 9-4.9z" />
-                  <path d="M3.2 7.6l8.8 4.9 8.8-4.9M12 21.1v-8.6" />
-                </svg>
-                <h3>Nothing matches those filters</h3>
-                <p>
-                  Try widening the price range or removing a colour or size. If you cannot find what you are after,
-                  message us — we often have more in the back.
-                </p>
-                <a class="btn btn--wa" href="https://wa.me/919876543210" target="_blank" rel="noopener noreferrer">
-                  Ask us on WhatsApp
-                </a>
-              </div>
+              <div id="emptyState" hidden></div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- ============ OTHER CATEGORIES ============ -->
+      <!-- content/category.json ▸ related -->
       <section class="section section--alt" aria-labelledby="relTitle">
         <div class="container">
-          <div class="section-head">
-            <div class="section-head__text reveal">
-              <span class="eyebrow">Keep exploring</span>
-              <h2 class="h-section" id="relTitle">Other collections in store</h2>
-            </div>
-            <a class="link-arrow reveal" href="categories.html">All categories</a>
-          </div>
+          <div class="section-head" id="relatedHead"></div>
           <div id="relatedCats" class="cats-index"></div>
         </div>
       </section>
@@ -127,12 +103,12 @@
 
     <footer id="site-footer"></footer>
 
-    <script src="assets/js/site.config.js"></script>
-    <script src="assets/js/data/products.js"></script>
-    <script src="assets/js/icons.js"></script>
-    <script src="assets/js/media.js"></script>
-    <script src="assets/js/ui.js"></script>
-    <script src="assets/js/modal.js"></script>
-    <script src="assets/js/category.js"></script>
+    <script src="assets/js/content.js?v=20260829c"></script>
+    <script src="assets/js/catalog.js?v=20260829c"></script>
+    <script src="assets/js/icons.js?v=20260829c"></script>
+    <script src="assets/js/media.js?v=20260829c"></script>
+    <script src="assets/js/ui.js?v=20260829c"></script>
+    <script src="assets/js/modal.js?v=20260829c"></script>
+    <script src="assets/js/category.js?v=20260829c"></script>
   </body>
 </html>

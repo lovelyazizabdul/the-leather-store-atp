@@ -43,6 +43,8 @@ ErrorDocument 404 /404.html
 <IfModule mod_expires.c>
   ExpiresActive On
   ExpiresByType text/html                 "access plus 0 seconds"
+  # Editable content must always revalidate.
+  ExpiresByType application/json          "access plus 0 seconds"
   # CSS/JS filenames are not content-hashed, so they must revalidate.
   ExpiresByType text/css                  "access plus 0 seconds"
   ExpiresByType application/javascript    "access plus 0 seconds"
@@ -57,6 +59,7 @@ ErrorDocument 404 /404.html
 # ---- Correct MIME types ---------------------------------------------------
 <IfModule mod_mime.c>
   AddType image/svg+xml                 .svg
+  AddType application/json              .json
   AddType application/manifest+json     .webmanifest
   AddType video/mp4                     .mp4
   AddType font/woff2                    .woff2
@@ -76,7 +79,7 @@ ErrorDocument 404 /404.html
     Header set Cache-Control "public, max-age=31536000, immutable"
   </FilesMatch>
 
-  <FilesMatch "\.(css|js|html)$">
+  <FilesMatch "\.(css|js|html|json)$">
     Header set Cache-Control "public, max-age=0, must-revalidate"
   </FilesMatch>
 </IfModule>

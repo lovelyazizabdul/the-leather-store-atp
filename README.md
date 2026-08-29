@@ -1,73 +1,187 @@
 # The Leather Store — storefront website
 
 A fast, responsive, accessible catalogue website for an offline leather-goods
-boutique. **No build step, no framework, no dependencies** — it is plain HTML,
-CSS and JavaScript, so it can be dropped onto any host that serves static files.
+boutique.
+
+**Every word, price, image and video on the site comes from the JSON files in
+the `content/` folder.** You never need to touch HTML, CSS or JavaScript to
+update the shop.
+
+No build step, no framework, no dependencies — plain HTML, CSS and JS that can
+be dropped onto any host that serves static files.
 
 ---
 
 ## 1. Run it locally
 
-Pick whichever you already have installed:
-
 ```powershell
 # Node
 npm run dev            # http://localhost:5173
 
-# Python
+# or Python
 python -m http.server 5173
 ```
 
 Then open <http://localhost:5173>.
 
-> You can also just double-click `index.html`. Everything works from `file://`
-> except the "copy to clipboard" buttons and history-based deep links, which
-> browsers restrict on local files.
+> **A local server is required.** Double-clicking `index.html` will not work,
+> because browsers block reading local JSON files from `file://`. If you try,
+> the page tells you exactly what to run.
 
 ---
 
-## 2. Make it yours — the 5-minute checklist
+## 2. The content folder — this is all you edit
 
-Everything business-specific lives in **one file**:
-[`assets/js/site.config.js`](assets/js/site.config.js). Search it for `TODO`.
+| File | What it controls | How often you'll touch it |
+| ---- | ---------------- | ------------------------- |
+| `content/products.json` | **Your whole stock list** + categories, colours, size presets | Every time stock changes |
+| `content/site.json` | Shop name, phone, WhatsApp, email, address, map pin, opening hours, social links, your bio, header, footer, product pop-up wording | Rarely |
+| `content/home.json` | Landing page: hero slides, marquee, promises, section headings, story, reviews, closing call-to-action | Occasionally |
+| `content/categories.json` | The "Shop by category" page wording | Rarely |
+| `content/category.json` | Product-listing page wording: filter labels, sort options, empty-state message | Rarely |
+| `content/contact.json` | Contact page wording: info cards, form labels, store policies | Rarely |
+| `content/not-found.json` | The 404 page | Almost never |
 
-| # | What to change | Where |
-| - | -------------- | ----- |
-| 1 | Phone, WhatsApp number, email | `site.config.js` → `phone`, `whatsapp`, `email` |
-| 2 | Shop address | `site.config.js` → `address` |
-| 3 | **Map pin coordinates** | `site.config.js` → `geo.lat` / `geo.lng` |
-| 4 | Opening hours | `site.config.js` → `hours` |
-| 5 | Instagram / Facebook / Telegram links | `site.config.js` → `social` |
-| 6 | Your bio, name, photo | `site.config.js` → `owner` |
-| 7 | Live domain | `site.config.js` → `url`, plus `<link rel="canonical">` in each `.html`, `robots.txt` and `sitemap.xml` |
-| 8 | Demo product video | `site.config.js` → `demoVideo` (see `assets/video/README.md`) |
+Every file starts with a `"_help"` line explaining what it does. Save the file,
+refresh the browser — that's the whole workflow.
 
-### Finding your exact coordinates
-
-1. Open <https://www.openstreetmap.org> (or Google Maps).
-2. Right-click your shop → **Show address** / **What's here?**
-3. Copy the two numbers, e.g. `12.9755, 77.6045`.
-4. Paste them into `geo: { lat: 12.9755, lng: 77.6045, zoom: 16 }`.
-
-### Products
-
-The whole catalogue lives in
-[`assets/js/data/products.js`](assets/js/data/products.js). Each product is one
-object; the shorthand keys are documented at the top of the file.
-
-- **Add a product:** copy any line in the `RAW` array and edit it.
-- **Add a category:** add an entry to `CATEGORIES` and add an artwork
-  silhouette with the same `id` in `assets/js/media.js` (`ART` object).
-- **Add photos/videos:** see `assets/img/products/README.md`.
-
-Product IDs, SKUs, discounts, review counts and feature bullets are all derived
-automatically — you only supply the essentials.
+> **Tip:** JSON is picky. A missing quote or a comma after the *last* item in a
+> list will break the file. If something goes wrong the site shows you the exact
+> file, line and reason instead of a blank page. Paste the file into
+> <https://jsonlint.com> if you get stuck.
 
 ---
 
-## 3. Deploying to a domain
+## 3. Adding new stock
 
-The site is a folder of static files. Upload it as-is.
+### Step 1 — drop your files in
+
+```
+assets/img/products/oxford-black-1.jpg     ← product photos
+assets/img/products/oxford-black-2.jpg
+assets/video/oxford-black.mp4              ← product video
+```
+
+### Step 2 — add the product to `content/products.json`
+
+Copy any existing block inside `"products"` and change it:
+
+```json
+{
+  "name": "Oxford Black Cap-Toe",
+  "category": "shoes",
+  "price": 5499,
+  "mrp": 7999,
+  "images": ["oxford-black-1.jpg", "oxford-black-2.jpg"],
+  "video": "oxford-black.mp4",
+  "description": "A closed-lacing oxford with a crisp cap toe…",
+  "colors": ["Black", "Cognac"],
+  "sizes": "@shoesMen",
+  "gender": "Men",
+  "material": "Full-Grain Leather",
+  "style": "Formal",
+  "rating": 4.8,
+  "inStock": true,
+  "bestseller": true,
+  "new": true
+}
+```
+
+Save, refresh. The product appears on the home page, in its category, in the
+filters, in the search counts and in the pop-up — with your photos and video.
+
+### The product fields
+
+| Field | Meaning |
+| ----- | ------- |
+| `name` | **Required.** Also becomes the product's web address (`#p=oxford-black-cap-toe`) |
+| `category` | **Required.** Must match an `id` in the `categories` list |
+| `price` | **Required.** Number only — no symbols, no commas. `5499` |
+| `mrp` | Struck-through "before" price. The % off badge is worked out for you |
+| `images` | File names from `assets/img/products/`. First one is the card photo. `[]` = generated artwork |
+| `video` | File name from `assets/video/`. `""` = the shared demo clip |
+| `description` | Shown in the pop-up |
+| `colors` | Names from the `colors` list at the top of the file. Drives the colour filter and swatches |
+| `sizes` | A list, or `"@shoesMen"` / `"@shoesWomen"` / `"@bags"` to reuse a preset |
+| `gender` | `Men`, `Women` or `Unisex` — drives the gender filter |
+| `material`, `style` | Free text — they become filter options automatically |
+| `rating` | 0–5, shown on the card |
+| `inStock` | `false` shows a **Sold out** badge and changes the pop-up wording |
+| `bestseller`, `new` | `true` shows a **Bestseller** / **New in** badge and feeds the "Counter favourites" row |
+| `features` | Optional bullet list. Leave it out and sensible bullets are written for you |
+| Extras | `shape`, `lens` (sunglasses), `movement`, `strap` (watches), `family`, `concentration` (perfumes) — each becomes a filter |
+
+`id`, `sku`, the discount %, the review count and the filter lists are all
+generated automatically. You never maintain them.
+
+### Everyday jobs
+
+| I want to… | Do this |
+| ---------- | ------- |
+| Change a price | Edit `price` (and `mrp`) on that product |
+| Mark something sold out | `"inStock": false` |
+| Flag new arrivals | `"new": true` |
+| Add real photos | Copy files into `assets/img/products/`, list the names in `images` |
+| Add a video | Copy the file into `assets/video/`, put the name in `video` |
+| Add a whole new category | Add a block to `categories`, then give products that `category` id |
+| Add a new colour | Add `"Teal": "#0f6f6a"` to the `colors` list, then use `"Teal"` on products |
+| Change a heading anywhere | Find the page's JSON file and edit the text |
+| Change phone / address / hours | `content/site.json` |
+
+### Image and video specs
+
+| Use | Size | Format | Target |
+| --- | ---- | ------ | ------ |
+| Product photo | 1000 × 1250 (4:5) | `.webp` / `.jpg` | under 180 KB |
+| Category tile | 900 × 700 | `.webp` / `.jpg` | under 200 KB |
+| Hero slide | 1600 × 900 | `.webp` / `.jpg` | under 300 KB |
+| Owner portrait | 800 × 800 | `.webp` / `.jpg` | under 120 KB |
+| Product video | 1080 × 1080, 8–20 s | `.mp4` (H.264) | under 4 MB |
+
+Compress with <https://squoosh.app>. For video:
+
+```bash
+ffmpeg -i input.mov -vf "scale=1080:-2" -c:v libx264 -crf 26 -preset slow \
+       -movflags +faststart -c:a aac -b:a 96k output.mp4
+```
+
+Anything you leave empty falls back to on-brand generated artwork, so the site
+is never broken while you gather photos.
+
+---
+
+## 4. Go-live checklist
+
+Open `content/site.json` and replace these:
+
+- [ ] `brand.name`, `brand.tagline`, `brand.url`
+- [ ] `contact.phoneDisplay`, `contact.phone`, `contact.whatsapp`, `contact.email`
+- [ ] `address` (all lines)
+- [ ] **`map.lat` / `map.lng`** — right-click your shop on
+      <https://www.openstreetmap.org> → *Show address*, copy the two numbers
+- [ ] `map.directionsUrl` — paste a share link from Google Maps; every
+      "Get directions" button uses it
+- [ ] `hours` — each day lists its open windows as `"HH:MM-HH:MM"` in 24-hour
+      time. Add a second window for a lunch break, e.g.
+      `"shifts": ["10:00-14:30", "17:00-21:30"]`, or use `"shifts": []` for a
+      closed day. The live "Open now / Closed" badge follows this automatically.
+- [ ] `social.instagram`, `social.facebook`, `social.telegram`
+- [ ] `owner` — your name, role, bio and photo
+- [ ] `media.demoVideo` — replace with one of your own clips
+- [ ] `commerce.currency` / `locale` if you are not selling in ₹
+
+Then, outside the content folder:
+
+- [ ] `<link rel="canonical">` in each `.html`
+- [ ] Your domain in `robots.txt` and `sitemap.xml`
+- [ ] Replace `assets/img/og-image.svg` with a 1200 × 630 **JPG or PNG** (some
+      social networks do not render SVG previews)
+
+---
+
+## 5. Deploying to a domain
+
+The site is a folder of static files. Upload it as-is — including `content/`.
 
 <details>
 <summary><b>Netlify</b> (easiest — drag & drop)</summary>
@@ -75,10 +189,9 @@ The site is a folder of static files. Upload it as-is.
 1. Go to <https://app.netlify.com/drop>
 2. Drag the whole `the-leather-store` folder onto the page.
 3. **Site settings → Domain management → Add custom domain.**
-4. At your registrar, point the domain at Netlify's nameservers (or add the
-   `CNAME`/`A` records Netlify shows you).
 
-`netlify.toml` already sets caching, security headers and the 404 page.
+`netlify.toml` already sets caching, security headers and the 404 page, and
+marks `content/*.json` as never-cached so your edits go live immediately.
 </details>
 
 <details>
@@ -88,149 +201,126 @@ The site is a folder of static files. Upload it as-is.
 npx vercel --prod
 ```
 
-Choose "Other" as the framework preset and `.` as the output directory.
-`vercel.json` supplies headers and redirects.
+Framework preset "Other", output directory `.`. `vercel.json` supplies headers.
 </details>
 
 <details>
 <summary><b>GitHub Pages</b></summary>
 
-1. Push this folder to a GitHub repository.
-2. **Settings → Pages → Source: Deploy from a branch → `main` / `(root)`.**
-3. Add a `CNAME` file containing your domain if you use a custom one.
-
-Note: GitHub Pages ignores `.htaccess`, `netlify.toml` and `vercel.json`, so
-security headers must be set at your CDN instead.
+Push the folder, then **Settings → Pages → Deploy from a branch → `main` /
+`(root)`**. Note: GitHub Pages ignores `.htaccess` / `netlify.toml` /
+`vercel.json`, so security headers must come from your CDN instead.
 </details>
 
 <details>
-<summary><b>cPanel / shared hosting / any Apache server</b></summary>
+<summary><b>cPanel / shared hosting / Apache</b></summary>
 
-1. Zip the folder, upload it in **File Manager**, and extract it into
-   `public_html`.
-2. `.htaccess` (already included) enables gzip, caching, pretty URLs, the 404
-   page and security headers.
-3. Enable the free **Let's Encrypt** SSL certificate, then uncomment the
-   HTTPS-redirect block near the top of `.htaccess`.
+1. Zip the folder, upload in **File Manager**, extract into `public_html`.
+2. `.htaccess` handles gzip, caching, pretty URLs, the 404 page and headers.
+3. Enable the free **Let's Encrypt** certificate, then uncomment the HTTPS
+   redirect near the top of `.htaccess`.
 </details>
 
-<details>
-<summary><b>Cloudflare Pages</b></summary>
-
-Connect the repo, leave the build command empty and set the output directory to
-`/`. Add the headers from `netlify.toml` in a `_headers` file if you want them.
-</details>
+**Updating content after launch:** edit the JSON file, re-upload just that one
+file. Nothing else needs to change and no rebuild is required.
 
 ---
 
-## 4. What is in the box
+## 6. What is in the box
 
 ```
 the-leather-store/
-├── index.html            Landing page — hero carousel + full catalog
-├── categories.html       All nine collections
-├── category.html         Filtered category listing (?cat=shoes)
-├── contact.html          Map, bio, hours, enquiry form, policies
-├── 404.html              Styled not-found page
+├── content/                  ← EVERYTHING YOU EDIT LIVES HERE
+│   ├── site.json                 Shop details, header, footer, product pop-up
+│   ├── products.json             Categories + your stock list
+│   ├── home.json                 Landing page
+│   ├── categories.json           Categories page
+│   ├── category.json             Product listing page
+│   ├── contact.json              Contact page
+│   └── not-found.json            404 page
+├── index.html                Landing page — hero carousel + full catalog
+├── categories.html           All nine collections
+├── category.html             Filtered listing (?cat=shoes)
+├── contact.html              Map, bio, hours, enquiry form, policies
+├── 404.html                  Styled not-found page
 ├── assets/
-│   ├── css/
-│   │   ├── base.css          Design tokens, reset, typography, utilities
-│   │   ├── components.css    Header, footer, cards, carousel, modal, filters
-│   │   └── pages.css         Page-level compositions + responsive rules
+│   ├── css/  base · components · pages
 │   ├── js/
-│   │   ├── site.config.js    ← ALL business details live here
-│   │   ├── data/products.js  ← The catalogue
-│   │   ├── icons.js          Inline SVG icon set
-│   │   ├── media.js          Generates on-brand placeholder artwork
-│   │   ├── ui.js             Shared header, footer, cards, helpers, SEO schema
-│   │   ├── modal.js          Product modal: gallery + video + enquiry
-│   │   ├── home.js           Landing page
-│   │   ├── categories.js     Categories index
-│   │   ├── category.js       Faceted filtering + sorting + URL state
-│   │   └── contact.js        Map, hours, bio, form validation
-│   ├── img/                  Favicon, social image, your product photos
-│   └── video/                Your product videos
-├── .htaccess  netlify.toml  vercel.json    Hosting configs
+│   │   ├── content.js            Loads the JSON, resolves media paths, boots
+│   │   ├── catalog.js            Turns products.json into the live catalog
+│   │   ├── icons.js              Inline SVG icon set
+│   │   ├── media.js              Generated placeholder artwork
+│   │   ├── ui.js                 Header, footer, cards, helpers, SEO schema
+│   │   ├── modal.js              Product pop-up: gallery + video + enquiry
+│   │   └── home / categories / category / contact / notfound .js
+│   ├── img/products/         ← your product photos
+│   ├── img/categories/       ← optional category tile photos
+│   ├── img/hero/             ← optional hero slide photos
+│   └── video/                ← your product videos
+├── .htaccess  netlify.toml  vercel.json
 ├── robots.txt  sitemap.xml  site.webmanifest
 └── package.json  .gitignore  README.md
 ```
 
----
+### Icon names you can use in the JSON
 
-## 5. Features
+`award` `box` `check` `chevronDown` `chevronLeft` `chevronRight` `chevronUp`
+`clock` `copy` `eye` `gift` `grid` `heart` `home` `mail` `navigation` `phone`
+`pin` `play` `refresh` `ruler` `share` `shield` `sliders` `sparkle` `star`
+`tag` `truck` `instagram` `facebook` `telegram` `whatsapp`
 
-**Layout & navigation**
-- Shared header and footer rendered from a single source, so they never drift
-  between pages
-- Sticky header with a desktop mega-menu and a mobile slide-in drawer
-- Breadcrumbs on every inner page
-- Back-to-top and floating WhatsApp buttons
+### Text placeholders you can use in the JSON
 
-**Landing page**
-- Auto-playing hero carousel — swipe, arrows, dots with progress, keyboard
-  arrows, pauses on hover/focus/tab-blur, and respects `prefers-reduced-motion`
-- The complete store catalogue below the fold, grouped by category, with quick
-  category tabs
+`{STORE}` `{TAGLINE}` `{ESTABLISHED}` `{YEAR}` `{PHONE}` `{EMAIL}` `{CITY}`
+`{STREET}` `{ADDRESS}` `{PRODUCTS}` `{CATEGORIES}`
 
-**Category pages**
-- Faceted filters: size, colour (with swatches), gender, material, style, frame
-  shape, lens, movement, strap, fragrance family, concentration — whichever
-  apply to that category
-- Live option counts, dual price slider, in-stock toggle, six sort orders
-- Removable filter chips and a "clear all" action
-- Filter state is written to the URL, so a filtered view can be bookmarked and
-  shared
-- Filters collapse into a proper drawer on tablet and mobile
-
-**Product modal**
-- Multi-image gallery with thumbnails, arrows, swipe and keyboard navigation
-- Product video with a poster frame, `playsinline` (no fullscreen hijack on
-  iOS) and `preload="none"` so it costs nothing until played
-- Full specs, sizes, colours, features and pricing
-- Deep-linkable (`#p=product-id`), shareable via the native share sheet
-- One-tap "Enquire on WhatsApp" with the product pre-filled
-
-**Contact page**
-- Leaflet + OpenStreetMap — free, open source, **no API key and no billing
-  account required**, with a branded pin, popup and directions link
-- Graceful fallback card if the map library cannot load
-- Live "open now / closed" status derived from your opening hours
-- Bio section, store policies, and a validated enquiry form that hands off to
-  WhatsApp (no backend, nothing stored)
-
-**Quality**
-- Responsive from 320 px phones to ultra-wide desktops; fluid type and spacing
-- iOS/Android safe-area insets, `100svh` units, no rubber-band scroll leaks
-  behind modals
-- Keyboard accessible throughout: focus traps, `aria-expanded`, `aria-current`,
-  live regions, skip link, visible focus rings
-- Honours `prefers-reduced-motion`
-- `LocalBusiness`/`ClothingStore` JSON-LD, Open Graph and Twitter cards,
-  sitemap, robots.txt and a web app manifest
-- Zero third-party trackers
+Wrap a word in `{curly braces}` inside any **title** to make it italic gold —
+for example `"Leather that {remembers} you"`.
 
 ---
 
-## 6. Browser support
+## 7. Features
 
-Tested against evergreen Chrome, Edge, Firefox and Safari, plus iOS Safari 13+
-and Android Chrome. There is no build step, so nothing is transpiled — the code
-deliberately sticks to widely supported ES5/ES2017 syntax.
+**Layout & navigation** — shared header/footer from a single source, sticky
+header with a desktop mega-menu and mobile drawer, breadcrumbs, back-to-top and
+a floating WhatsApp button.
+
+**Landing page** — auto-playing hero carousel (swipe, arrows, progress dots,
+keyboard, pauses on hover/focus/tab-blur, respects `prefers-reduced-motion`),
+plus the complete catalogue grouped by category with quick tabs.
+
+**Category pages** — faceted filters with live option counts, dual price
+slider, in-stock toggle, six sort orders, removable chips, and filter state
+written to the URL so a filtered view can be bookmarked and shared. Filters
+collapse into a drawer on tablet and mobile.
+
+**Product pop-up** — multi-image gallery with thumbnails, arrows, swipe and
+keyboard; product video with poster frame, `playsinline` and `preload="none"`;
+full specs; deep-linkable (`#p=product-id`); native share; one-tap WhatsApp
+enquiry with the product pre-filled.
+
+**Contact page** — Leaflet + OpenStreetMap (free, **no API key**), branded pin
+and directions link, graceful fallback if the map library cannot load, live
+open/closed status, bio, policies, and a validated enquiry form that hands off
+to WhatsApp (no backend, nothing stored).
+
+**Quality** — responsive from 320 px to ultra-wide with fluid type; iOS/Android
+safe-area insets and `svh` units; keyboard accessible throughout with focus
+traps and live regions; `LocalBusiness` JSON-LD, Open Graph, sitemap, robots and
+a web app manifest; zero third-party trackers.
 
 ---
 
-## 7. Notes & good hygiene
+## 8. Notes
 
-- **OpenStreetMap tiles** are free but rate-limited. If the site starts getting
-  heavy traffic, swap the tile URL in `assets/js/contact.js` for a provider such
-  as MapTiler, Stadia Maps or Thunderforest (all have free tiers).
-- **Prices** are rendered with `Intl.NumberFormat` using `locale` and `currency`
-  from `site.config.js` — change those two values for a different market.
-- **The contact form has no server.** It builds a WhatsApp message. If you later
-  want emailed submissions, point the form at Formspree, Basin or a Netlify
-  Form; nothing else needs to change.
-- **Content Security Policy** in the hosting configs currently allows inline
-  styles and scripts (used by the JSON-LD block and a few inline `style`
-  attributes). Tighten it with hashes if your host supports it.
-- Replace `assets/img/og-image.svg` with a 1200 × 630 **JPG or PNG** before
-  launch — some social networks do not render SVG previews.
+- **OpenStreetMap tiles** are free but rate-limited. Under heavy traffic, swap
+  `map.tileUrl` in `content/site.json` for MapTiler, Stadia Maps or
+  Thunderforest (all have free tiers).
+- **The contact form has no server.** It builds a WhatsApp message. To receive
+  emails instead, point the form at Formspree, Basin or a Netlify Form.
+- **Content Security Policy** in the hosting configs allows inline styles and
+  scripts (used by the JSON-LD block and a few inline `style` attributes).
+  Tighten it with hashes if your host supports it.
+- Tested on evergreen Chrome, Edge, Firefox and Safari, plus iOS Safari 13+ and
+  Android Chrome. Nothing is transpiled — the code sticks to widely supported
+  syntax.
